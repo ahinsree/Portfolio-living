@@ -21,7 +21,7 @@ export default function HexagonGrid() {
     const [activeHexes, setActiveHexes] = useState<Map<string, number>>(new Map());
 
     // Hexagon size configuration
-    const hexSize = 80;
+    const hexSize = 50; // Balanced size
     const hexWidth = Math.sqrt(3) * hexSize;
     const hexHeight = 2 * hexSize;
     const xSpacing = hexWidth;
@@ -32,6 +32,7 @@ export default function HexagonGrid() {
     const animationFrameRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
     const lastMousePosRef = useRef<{ r: number, c: number } | null>(null);
+    const agentRef = useRef({ r: 10, c: 10, targetR: 10, targetC: 10 });
 
     // Initial Grid Layout
     useEffect(() => {
@@ -70,6 +71,7 @@ export default function HexagonGrid() {
             let changed = false;
             const map = activeHexesRef.current;
 
+            // 1. DECAY Logic
             map.forEach((life, key) => {
                 const newLife = life - 0.1; // Fast decay
                 if (newLife <= 0) {
@@ -80,6 +82,41 @@ export default function HexagonGrid() {
                     changed = true;
                 }
             });
+
+            // 2. AUTONOMOUS AGENT (Devin AI Ghost)
+            const agent = agentRef.current;
+            const dr = agent.targetR - agent.r;
+            const dc = agent.targetC - agent.c;
+
+            // If close to target, pick new random target
+            if (Math.abs(dr) < 0.5 && Math.abs(dc) < 0.5) {
+                // Pick random spot within bounds
+                agent.targetR = Math.floor(Math.random() * 25);
+                agent.targetC = Math.floor(Math.random() * 40);
+            } else {
+                // Smooth move towards target
+                agent.r += dr * 0.05;
+                agent.c += dc * 0.05;
+
+                // Activate current agent position
+                const r = Math.round(agent.r);
+                const c = Math.round(agent.c);
+                const key = `${r},${c}`;
+
+                // Only activate if not already super active 
+                if ((map.get(key) || 0) < 0.8) {
+                    map.set(key, 1.0);
+                    changed = true;
+
+                    // Agent trail spread
+                    if (Math.random() > 0.5) {
+                        const neighbors = getNeighbors(r, c);
+                        const n = neighbors[Math.floor(Math.random() * neighbors.length)];
+                        const nKey = `${n[0]},${n[1]}`;
+                        map.set(nKey, Math.random() * 0.6 + 0.4);
+                    }
+                }
+            }
 
             if (changed) {
                 setActiveHexes(new Map(map));
@@ -112,7 +149,7 @@ export default function HexagonGrid() {
                 // 1. Always infect immediate neighbors with high probability
                 const neighbors = getNeighbors(targetR, targetC);
                 neighbors.forEach(([nR, nC]) => {
-                    if (Math.random() > 0.3) { // 70% chance
+                    if (Math.random() > 0.3) {
                         const nKey = `${nR},${nC}`;
                         activeHexesRef.current.set(nKey, Math.random() * 0.5 + 0.5);
 
@@ -125,6 +162,28 @@ export default function HexagonGrid() {
                         }
                     }
                 });
+
+                // 3. "Multiple Pattern" / Remote Trigger Logic
+                if (Math.random() > 0.85) {
+                    const randomR = Math.floor(Math.random() * 25);
+                    const randomC = Math.floor(Math.random() * 40);
+
+                    const distR = (Math.random() < 0.5 ? -1 : 1) * (Math.floor(Math.random() * 5) + 3);
+                    const distC = (Math.random() < 0.5 ? -1 : 1) * (Math.floor(Math.random() * 5) + 3);
+
+                    const remoteR = targetR + distR;
+                    const remoteC = targetC + distC;
+
+                    const remoteKey = `${remoteR},${remoteC}`;
+                    activeHexesRef.current.set(remoteKey, Math.random() * 0.5 + 0.5);
+
+                    const remoteNeighbors = getNeighbors(remoteR, remoteC);
+                    remoteNeighbors.forEach(([nr, nc]) => {
+                        if (Math.random() > 0.5) {
+                            activeHexesRef.current.set(`${nr},${nc}`, Math.random() * 0.4 + 0.3);
+                        }
+                    });
+                }
             };
 
             activate(r, c);
