@@ -2,33 +2,46 @@
 
 import { useEffect, useRef, useState } from "react";
 
+// Helper to get random neighbors
+const getNeighbors = (r: number, c: number) => {
+    // Offset coords: odd-r vertical layout (shoved columns)
+    const directions = [
+        [[+1, 0], [+1, -1], [0, -1], [-1, -1], [-1, 0], [0, +1]], // Even rows
+        [[+1, +1], [+1, 0], [0, -1], [-1, 0], [-1, +1], [0, +1]], // Odd rows
+    ];
+    const parity = r & 1;
+    const dir = directions[parity];
+    return dir.map(([dr, dc]) => [r + dr, c + dc]);
+};
+
 export default function HexagonGrid() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-    const [hexagons, setHexagons] = useState<{ x: number; y: number }[]>([]);
+
+    const [hexagons, setHexagons] = useState<{ x: number; y: number; r: number; c: number }[]>([]);
+    const [activeHexes, setActiveHexes] = useState<Map<string, number>>(new Map());
 
     // Hexagon size configuration
-    const hexSize = 25; // Slightly smaller for denser grid
+    const hexSize = 80; // Large size
     const hexWidth = Math.sqrt(3) * hexSize;
     const hexHeight = 2 * hexSize;
-
-    // Spacing
     const xSpacing = hexWidth;
     const ySpacing = hexHeight * 0.75;
 
+    // Mutation refs
+    const activeHexesRef = useRef<Map<string, number>>(new Map());
+    const animationFrameRef = useRef<number>(0);
+    const lastTimeRef = useRef<number>(0);
+    const lastMousePosRef = useRef<{ r: number, c: number } | null>(null);
+
+    // Initial Grid Layout
     useEffect(() => {
         if (!containerRef.current) return;
 
         const handleResize = () => {
-            // Only run on client
             if (typeof window === 'undefined' || !containerRef.current) return;
-
             const { clientWidth, clientHeight } = containerRef.current;
             if (clientWidth === 0 || clientHeight === 0) return;
 
-            setDimensions({ width: clientWidth, height: clientHeight });
-
-            // Calculate grid to cover the area + buffer
             const cols = Math.ceil(clientWidth / xSpacing) + 2;
             const rows = Math.ceil(clientHeight / ySpacing) + 2;
 
@@ -38,7 +51,7 @@ export default function HexagonGrid() {
                     const xOffset = (r % 2) * (hexWidth / 2);
                     const x = c * xSpacing + xOffset - hexWidth;
                     const y = r * ySpacing - hexHeight;
-                    newHexagons.push({ x, y });
+                    newHexagons.push({ x, y, r, c });
                 }
             }
             setHexagons(newHexagons);
@@ -49,25 +62,98 @@ export default function HexagonGrid() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // Mouse tracking - Attached to window to capture global movement even with pointer-events: none
+    // Animation Loop
     useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
+        const animate = (time: number) => {
+            if (!lastTimeRef.current) lastTimeRef.current = time;
+
+            let changed = false;
+            const map = activeHexesRef.current;
+
+            map.forEach((life, key) => {
+                // Decay rate: 0.1 for very quick "flashlight" transition
+                const newLife = life - 0.1;
+                if (newLife <= 0) {
+                    map.delete(key);
+                    changed = true;
+                } else {
+                    map.set(key, newLife);
+                    changed = true;
+                }
+            });
+
+            if (changed) {
+                setActiveHexes(new Map(map));
+            }
+
+            lastTimeRef.current = time;
+            animationFrameRef.current = requestAnimationFrame(animate);
+        };
+
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationFrameRef.current);
+    }, []);
+
+    // Mouse Handler
+    useEffect(() => {
+        const processInteraction = (clientX: number, clientY: number) => {
             if (!containerRef.current) return;
-
             const rect = containerRef.current.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const mouseX = clientX - rect.left;
+            const mouseY = clientY - rect.top;
 
-            containerRef.current.style.setProperty("--mouse-x", `${x}px`);
-            containerRef.current.style.setProperty("--mouse-y", `${y}px`);
+            const r = Math.round(mouseY / ySpacing);
+            const c = Math.round((mouseX - (r % 2) * (hexWidth / 2)) / xSpacing);
+
+            const activate = (targetR: number, targetC: number) => {
+                const key = `${targetR},${targetC}`;
+                activeHexesRef.current.set(key, 1.0);
+
+                if (Math.random() > 0.4) {
+                    const neighbors = getNeighbors(targetR, targetC);
+                    const count = Math.floor(Math.random() * 2) + 1;
+                    for (let i = 0; i < count; i++) {
+                        const n = neighbors[Math.floor(Math.random() * neighbors.length)];
+                        const nKey = `${n[0]},${n[1]}`;
+                        if (!activeHexesRef.current.has(nKey) || (activeHexesRef.current.get(nKey) || 0) < 0.5) {
+                            activeHexesRef.current.set(nKey, Math.random() * 0.5 + 0.5);
+                        }
+                    }
+                }
+            };
+
+            activate(r, c);
+            lastMousePosRef.current = { r, c };
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            processInteraction(e.clientX, e.clientY);
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (e.touches.length > 0) {
+                processInteraction(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        };
+
+        const handleMouseLeave = () => {
+            lastMousePosRef.current = null;
         };
 
         window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
+        window.addEventListener("touchstart", handleTouchMove, { passive: true });
+        window.addEventListener("touchmove", handleTouchMove, { passive: true });
+        window.addEventListener("mouseleave", handleMouseLeave);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("touchstart", handleTouchMove);
+            window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("mouseleave", handleMouseLeave);
+        };
     }, []);
 
     const hexPath = (x: number, y: number) => {
-        // Points for hexagon at x,y
         return `M${x + hexWidth / 2} ${y} L${x + hexWidth} ${y + hexHeight / 4} L${x + hexWidth} ${y + hexHeight * 0.75} L${x + hexWidth / 2} ${y + hexHeight} L${x} ${y + hexHeight * 0.75} L${x} ${y + hexHeight / 4} Z`;
     };
 
@@ -75,41 +161,32 @@ export default function HexagonGrid() {
         <div
             ref={containerRef}
             className="absolute inset-0 overflow-hidden pointer-events-none z-0"
-        // Removed static mask so the grid is purely driven by the 'cursor flashlight'
         >
-            {/* 
-              Active Masked Grid - Only visible where the mouse is.
-              The radial gradient at the mouse position reveals the grid. 
-              Everything else is transparent (black hidden in mask, transparency in gradient).
-            */}
-            <div
-                className="absolute inset-0 transition-opacity duration-300"
-                style={{
-                    background: "transparent",
-                    maskImage: "radial-gradient(400px circle at var(--mouse-x, -9999px) var(--mouse-y, -9999px), black, transparent 70%)",
-                    WebkitMaskImage: "radial-gradient(400px circle at var(--mouse-x, -9999px) var(--mouse-y, -9999px), black, transparent 70%)",
-                }}
-            >
-                <svg width="100%" height="100%">
-                    <defs>
-                        <linearGradient id="gradient-active" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="var(--color-primary)" />
-                            <stop offset="50%" stopColor="var(--color-secondary)" />
-                            <stop offset="100%" stopColor="var(--color-accent)" />
-                        </linearGradient>
-                    </defs>
-                    {hexagons.map((hex, i) => (
+            <svg width="100%" height="100%">
+                <defs>
+                    <linearGradient id="gradient-tech" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="var(--color-primary)" />
+                        <stop offset="100%" stopColor="var(--color-secondary)" />
+                    </linearGradient>
+                </defs>
+
+                {hexagons.map((hex) => {
+                    const life = activeHexes.get(`${hex.r},${hex.c}`);
+                    if (!life) return null;
+
+                    return (
                         <path
-                            key={`active-${i}`}
+                            key={`${hex.r}-${hex.c}`}
                             d={hexPath(hex.x, hex.y)}
                             fill="none"
-                            stroke="url(#gradient-active)"
-                            strokeWidth="1.5"
-                            className="transition-colors duration-500"
+                            stroke="url(#gradient-tech)"
+                            strokeWidth="3"
+                            strokeOpacity={life}
+                            className="transition-none"
                         />
-                    ))}
-                </svg>
-            </div>
+                    );
+                })}
+            </svg>
         </div>
     );
 }
