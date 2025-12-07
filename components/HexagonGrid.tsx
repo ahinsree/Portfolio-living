@@ -21,7 +21,7 @@ export default function HexagonGrid() {
     const [activeHexes, setActiveHexes] = useState<Map<string, number>>(new Map());
 
     // Hexagon size configuration
-    const hexSize = 80; // Large size
+    const hexSize = 80;
     const hexWidth = Math.sqrt(3) * hexSize;
     const hexHeight = 2 * hexSize;
     const xSpacing = hexWidth;
@@ -71,8 +71,7 @@ export default function HexagonGrid() {
             const map = activeHexesRef.current;
 
             map.forEach((life, key) => {
-                // Decay rate: 0.1 for very quick "flashlight" transition
-                const newLife = life - 0.1;
+                const newLife = life - 0.1; // Fast decay
                 if (newLife <= 0) {
                     map.delete(key);
                     changed = true;
@@ -94,7 +93,7 @@ export default function HexagonGrid() {
         return () => cancelAnimationFrame(animationFrameRef.current);
     }, []);
 
-    // Mouse Handler
+    // Interaction Handler
     useEffect(() => {
         const processInteraction = (clientX: number, clientY: number) => {
             if (!containerRef.current) return;
@@ -109,17 +108,23 @@ export default function HexagonGrid() {
                 const key = `${targetR},${targetC}`;
                 activeHexesRef.current.set(key, 1.0);
 
-                if (Math.random() > 0.4) {
-                    const neighbors = getNeighbors(targetR, targetC);
-                    const count = Math.floor(Math.random() * 2) + 1;
-                    for (let i = 0; i < count; i++) {
-                        const n = neighbors[Math.floor(Math.random() * neighbors.length)];
-                        const nKey = `${n[0]},${n[1]}`;
-                        if (!activeHexesRef.current.has(nKey) || (activeHexesRef.current.get(nKey) || 0) < 0.5) {
-                            activeHexesRef.current.set(nKey, Math.random() * 0.5 + 0.5);
+                // Enhanced DENSITY / MULTIPLE PATTERN logic
+                // 1. Always infect immediate neighbors with high probability
+                const neighbors = getNeighbors(targetR, targetC);
+                neighbors.forEach(([nR, nC]) => {
+                    if (Math.random() > 0.3) { // 70% chance
+                        const nKey = `${nR},${nC}`;
+                        activeHexesRef.current.set(nKey, Math.random() * 0.5 + 0.5);
+
+                        // 2. Chance to spawn a "secondary" spread further out (neighbors of neighbors)
+                        if (Math.random() > 0.6) {
+                            const subNeighbors = getNeighbors(nR, nC);
+                            const subN = subNeighbors[Math.floor(Math.random() * subNeighbors.length)];
+                            const subKey = `${subN[0]},${subN[1]}`;
+                            activeHexesRef.current.set(subKey, Math.random() * 0.5 + 0.4);
                         }
                     }
-                }
+                });
             };
 
             activate(r, c);
