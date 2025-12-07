@@ -42,7 +42,7 @@ export default function FeatureGrid() {
                             key={feature.name}
                             className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
                         >
-                            <div className="w-12 h-12 bg-accent-tan/10 rounded-lg flex items-center justify-center mb-6 text-accent-tan">
+                            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 text-primary group-hover:bg-primary/20 transition-colors">
                                 <feature.icon size={24} />
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-3 font-display">

@@ -14,20 +14,31 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
 
-  /* Custom Colors */
+  /* Custom Colors - Vibrant Palette */
+  --color-primary: #6366f1;
+  /* Indigo 500 */
+  --color-secondary: #06b6d4;
+  /* Cyan 500 */
+  --color-accent: #f472b6;
+  /* Pink 400 */
+
+  /* Retaining existing brand vars for compatibility or mapping them */
+  --color-brand-blue: #6366f1;
+  --color-brand-purple: #a855f7;
+  /* Purple 500 */
+  --color-brand-red: #f472b6;
+
+  --color-accent-tan: #d2b48c;
+  /* Keeping the tan for specific accents */
+
   --color-gray-50: #f9fafb;
   --color-gray-900: #111827;
   --color-gray-600: #4b5563;
-  --color-brand-blue: #4285f4;
-  --color-brand-purple: #9b72cb;
-  --color-brand-red: #ea4335;
-  --color-accent-tan: #d2b48c;
-  /* Tan/Leather - verified hex roughly */
 }
 
 /* Custom Utilities if needed */
 .text-gradient-brand {
-  @apply bg-clip-text text-transparent bg-linear-to-r from-brand-blue via-brand-purple to-brand-red;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-red;
 }
 
 body {

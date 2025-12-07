@@ -24,7 +24,7 @@ export default function Header() {
                     <div className="flex-shrink-0">
                         <Link
                             href="/"
-                            className="font-display font-bold text-xl tracking-tight text-gray-900 transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-brand-blue hover:via-brand-purple hover:to-brand-red"
+                            className="font-display font-bold text-xl tracking-tight text-gray-900 transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-primary hover:via-secondary hover:to-accent"
                         >
                             PORTFOLIO LIVING
                         </Link>

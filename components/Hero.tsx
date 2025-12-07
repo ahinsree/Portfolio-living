@@ -1,13 +1,15 @@
 import ColorPattern from "./ColorPattern";
+import HexagonGrid from "./HexagonGrid";
 
 export default function Hero() {
     return (
-        <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden">
+        <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden min-h-[80vh]">
             <ColorPattern />
+            <HexagonGrid />
 
             <div className="relative z-10 w-full flex flex-col items-center">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-tight mb-6 max-w-4xl mx-auto cursor-default">
-                    <span className="bg-gradient-to-r from-brand-blue via-brand-purple to-brand-red bg-clip-text text-gray-900 hover:text-transparent transition-colors duration-300 cursor-pointer">
+                    <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-gray-900 hover:text-transparent transition-colors duration-300 cursor-pointer">
                         Simple systems for wealth, career & communication
                     </span>
                 </h1>
