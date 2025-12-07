@@ -9,7 +9,7 @@ export default function Hero() {
 
             <div className="relative z-10 w-full flex flex-col items-center">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-tight mb-6 max-w-4xl mx-auto cursor-default">
-                    <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-gray-900 hover:text-transparent active:text-transparent transition-colors duration-300 cursor-pointer select-none">
+                    <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-gray-900 hover:text-transparent active:text-transparent active:scale-[0.98] transition-all duration-150 cursor-pointer select-none inline-block">
                         Simple systems for wealth, career & communication
                     </span>
                 </h1>
