@@ -107,8 +107,8 @@ export default function AiAssistant() {
                             >
                                 <div
                                     className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.sender === "user"
-                                            ? "bg-gray-900 text-white rounded-br-none"
-                                            : "bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm"
+                                        ? "bg-gray-900 text-white rounded-br-none"
+                                        : "bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm"
                                         }`}
                                 >
                                     <p>{msg.text}</p>
