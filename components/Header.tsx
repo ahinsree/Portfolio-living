@@ -9,11 +9,12 @@ export default function Header() {
 
     const navigation = [
         { name: "Home", href: "/" },
-        { name: "Blog", href: "#blog" },
-        { name: "Videos", href: "#videos" },
-        { name: "Guides", href: "#guides" },
+        { name: "Services", href: "/services" },
+        { name: "Blogs", href: "/blogs" },
+        { name: "Videos", href: "/videos" },
+        { name: "Category", href: "/category" },
         { name: "About", href: "/about" },
-        { name: "Contact", href: "#contact" },
+        { name: "Contact", href: "/contact" },
     ];
 
     return (
