@@ -16,7 +16,7 @@ export default function About() {
                     <span className="text-accent text-sm font-bold tracking-widest uppercase mb-4 block">The Paradigm Shift</span>
                     <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-8 leading-tight">
                         Playing It Safe Is <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-500">The Riskiest Move You Can Make.</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent pb-1">The Riskiest Move You Can Make.</span>
                     </h1>
                     <div className="prose prose-lg mx-auto text-gray-600">
                         <p className="text-xl leading-relaxed max-w-3xl mx-auto">
