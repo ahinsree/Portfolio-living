@@ -1,6 +1,4 @@
-"use client";
-
-import { notFound, useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Play, TrendingUp, MessageCircle, Briefcase, User, Cpu } from "lucide-react";
@@ -146,12 +144,11 @@ const CATEGORY_DATA: Record<string, any> = {
     }
 };
 
-export default function CategoryPage() {
-    const params = useParams();
-    // Safely handle params.slug being string or array
-    const slug = typeof params?.slug === 'string' ? params.slug : Array.isArray(params?.slug) ? params.slug[0] : '';
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
 
     const category = CATEGORY_DATA[slug];
+
 
     if (!category) {
         return (
@@ -277,4 +274,10 @@ export default function CategoryPage() {
             <Footer />
         </div>
     );
+}
+
+export async function generateStaticParams() {
+    return Object.keys(CATEGORY_DATA).map((slug) => ({
+        slug: slug,
+    }));
 }
