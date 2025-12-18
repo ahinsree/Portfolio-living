@@ -38,7 +38,7 @@ export default function BlogGrid() {
                     </div>
                     <a
                         href="#"
-                        className="hidden md:block text-accent-tan font-medium hover:text-opacity-80"
+                        className="hidden md:block text-red-600 font-medium hover:text-opacity-80"
                     >
                         View all articles &rarr;
                     </a>
@@ -59,10 +59,10 @@ export default function BlogGrid() {
                                 />
                             </div>
                             <div className="flex-1">
-                                <span className="text-xs font-bold tracking-wider text-accent-tan uppercase mb-2 block">
+                                <span className="text-xs font-bold tracking-wider text-red-600 uppercase mb-2 block">
                                     {post.category}
                                 </span>
-                                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-accent-tan transition-colors line-clamp-2">
+                                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-red-600 transition-colors line-clamp-2">
                                     {post.title}
                                 </h3>
                                 <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
@@ -74,7 +74,7 @@ export default function BlogGrid() {
                 <div className="mt-8 text-center md:hidden">
                     <a
                         href="#"
-                        className="text-accent-tan font-medium hover:text-opacity-80"
+                        className="text-red-600 font-medium hover:text-opacity-80"
                     >
                         View all articles &rarr;
                     </a>

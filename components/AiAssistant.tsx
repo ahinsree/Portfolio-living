@@ -78,8 +78,8 @@ export default function AiAssistant() {
                     {/* Header */}
                     <div className="bg-gray-900 p-4 flex justify-between items-center text-white">
                         <div className="flex items-center gap-3">
-                            <div className="bg-accent-tan/20 p-2 rounded-full">
-                                <Bot size={20} className="text-accent-tan" />
+                            <div className="bg-red-100 p-2 rounded-full">
+                                <Bot size={20} className="text-red-600" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-sm">Portfolio Assistant</h3>
@@ -143,12 +143,12 @@ export default function AiAssistant() {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Ask me anything..."
-                            className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-tan/50 focus:border-accent-tan"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
                         />
                         <button
                             type="submit"
                             disabled={!inputValue.trim()}
-                            className="bg-accent-tan text-white p-2 rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="bg-red-600 text-white p-2 rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             <Send size={18} />
                         </button>
@@ -162,8 +162,8 @@ export default function AiAssistant() {
                 className="group relative flex items-center justify-center w-14 h-14 bg-gray-900 rounded-full shadow-lg hover:bg-gray-800 transition-all hover:scale-105 active:scale-95"
             >
                 <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-tan opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-tan"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                 </span>
                 {isOpen ? (
                     <X size={24} className="text-white" />

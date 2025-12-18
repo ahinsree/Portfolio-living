@@ -16,24 +16,24 @@
   --font-serif: var(--font-playfair);
 
 
-  /* Custom Colors - Vibrant Palette */
-  --color-primary: #6366f1;
-  /* Indigo 500 */
-  --color-secondary: #06b6d4;
-  /* Cyan 500 */
-  --color-accent: #f472b6;
-  /* Pink 400 */
+  /* New Red Palette */
+  --color-primary: #dc2626;
+  /* Red 600 */
+  --color-secondary: #991b1b;
+  /* Red 800 */
+  --color-accent: #fecaca;
+  /* Red 100 */
 
   /* Retaining existing brand vars for compatibility or mapping them */
-  --color-brand-blue: #6366f1;
-  --color-brand-purple: #a855f7;
-  /* Purple 500 */
-  --color-brand-red: #f472b6;
+  --color-brand-blue: #dc2626;
+  --color-brand-purple: #b91c1c;
+  /* Darker Red */
+  --color-brand-red: #ef4444;
 
-  --color-accent-tan: #d2b48c;
-  /* Keeping the tan for specific accents */
+  --color-accent-tan: #ef4444;
+  /* Replacing tan with vibrant red */
 
-  --color-gray-50: #f9fafb;
+  --color-gray-50: #fef2f2;
   --color-gray-900: #111827;
   --color-gray-600: #4b5563;
 }

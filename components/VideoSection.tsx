@@ -27,7 +27,7 @@ export default function VideoSection() {
                         </div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent">
-                        <span className="text-accent-tan text-sm font-bold tracking-wider uppercase">Featured</span>
+                        <span className="text-red-500 text-sm font-bold tracking-wider uppercase">Featured</span>
                         <h3 className="text-2xl md:text-3xl font-bold mt-2">Effective Communication Strategies for Leaders</h3>
                     </div>
                 </div>
@@ -42,7 +42,7 @@ export default function VideoSection() {
                                 </div>
                             </div>
                             <div className="p-4">
-                                <h4 className="font-bold text-lg text-white group-hover:text-accent-tan transition-colors">Wealth Building Habits #{i}</h4>
+                                <h4 className="font-bold text-lg text-white group-hover:text-red-500 transition-colors">Wealth Building Habits #{i}</h4>
                                 <p className="text-sm text-gray-400 mt-2">10 min watch</p>
                             </div>
                         </div>

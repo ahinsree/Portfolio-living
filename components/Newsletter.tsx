@@ -18,7 +18,7 @@ export default function Newsletter() {
                     />
                     <button
                         type="submit"
-                        className="bg-accent-tan text-white font-medium py-3 px-8 rounded-md hover:bg-opacity-90 transition-opacity shadow-lg shadow-accent-tan/20"
+                        className="bg-red-600 text-white font-medium py-3 px-8 rounded-md hover:bg-opacity-90 transition-opacity shadow-lg shadow-red-600/20"
                     >
                         Subscribe
                     </button>

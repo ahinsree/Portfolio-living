@@ -17,7 +17,7 @@ export default function ContactPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-white font-sans selection:bg-accent-tan selection:text-white">
+        <div className="min-h-screen bg-white font-sans selection:bg-red-600 selection:text-white">
             <Header />
 
             <main className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

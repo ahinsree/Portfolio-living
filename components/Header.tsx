@@ -46,7 +46,7 @@ export default function Header() {
 
                     {/* CTA Button */}
                     <div className="hidden md:flex items-center">
-                        <button className="bg-accent-tan text-white px-5 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+                        <button className="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
                             Subscribe
                         </button>
                     </div>
@@ -78,7 +78,7 @@ export default function Header() {
                             </Link>
                         ))}
                         <div className="mt-4 px-3">
-                            <button className="w-full bg-accent-tan text-white px-5 py-3 rounded-md text-base font-medium hover:opacity-90 transition-opacity">
+                            <button className="w-full bg-red-600 text-white px-5 py-3 rounded-md text-base font-medium hover:opacity-90 transition-opacity">
                                 Subscribe
                             </button>
                         </div>

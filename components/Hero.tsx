@@ -22,9 +22,9 @@ export default function Hero() {
                     <input
                         type="email"
                         placeholder="your@email.com"
-                        className="flex-1 appearance-none border border-gray-300 rounded-md py-3 px-4 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-tan focus:border-transparent"
+                        className="flex-1 appearance-none border border-gray-300 rounded-md py-3 px-4 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     />
-                    <button className="bg-accent-tan text-white font-medium py-3 px-6 rounded-md hover:opacity-90 transition-opacity whitespace-nowrap">
+                    <button className="bg-red-600 text-white font-medium py-3 px-6 rounded-md hover:opacity-90 transition-opacity whitespace-nowrap">
                         Subscribe
                     </button>
                 </div>
