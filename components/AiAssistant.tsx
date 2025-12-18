@@ -2,26 +2,33 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Bot } from "lucide-react";
-
-type Message = {
-    id: string;
-    text: string;
-    sender: "user" | "ai";
-    timestamp: Date;
-};
+import { useChat } from "@ai-sdk/react";
 
 export default function AiAssistant() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: "1",
-            text: "Hello! I'm your Portfolio Living assistant. How can I help you today?",
-            sender: "ai",
-            timestamp: new Date(),
+    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+        api: "/api/chat",
+        onResponse: (response) => {
+            console.log('Got response from AI:', response.status);
         },
-    ]);
-    const [isTyping, setIsTyping] = useState(false);
+        onError: (err) => {
+            console.error('Assistant error:', err);
+        },
+        initialMessages: [
+            {
+                id: "1",
+                role: "assistant",
+                content: "Hello! I'm your Portfolio Living assistant. How can I help you today?",
+            },
+        ],
+    });
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            console.log('Current message count:', messages.length);
+        }
+    }, [messages]);
+
+    const [isOpen, setIsOpen] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -31,44 +38,6 @@ export default function AiAssistant() {
     useEffect(() => {
         scrollToBottom();
     }, [messages, isOpen]);
-
-    const handleSendMessage = (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (!inputValue.trim()) return;
-
-        const newUserMessage: Message = {
-            id: Date.now().toString(),
-            text: inputValue,
-            sender: "user",
-            timestamp: new Date(),
-        };
-
-        setMessages((prev) => [...prev, newUserMessage]);
-        setInputValue("");
-        setIsTyping(true);
-
-        // Simulate AI response
-        setTimeout(() => {
-            const aiResponses = [
-                "That's a great question about wealth building!",
-                "Communication is key. Have you checked our latest video?",
-                "I can help you navigate your career path. What specific area are you interested in?",
-                "Our blog has some excellent resources on that topic.",
-            ];
-            const randomResponse =
-                aiResponses[Math.floor(Math.random() * aiResponses.length)];
-
-            const newAiMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: randomResponse,
-                sender: "ai",
-                timestamp: new Date(),
-            };
-
-            setMessages((prev) => [...prev, newAiMessage]);
-            setIsTyping(false);
-        }, 1500);
-    };
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
@@ -102,18 +71,18 @@ export default function AiAssistant() {
                         {messages.map((msg) => (
                             <div
                                 key={msg.id}
-                                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"
+                                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"
                                     }`}
                             >
                                 <div
-                                    className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.sender === "user"
+                                    className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === "user"
                                         ? "bg-gray-900 text-white rounded-br-none"
                                         : "bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm"
                                         }`}
                                 >
-                                    <p>{msg.text}</p>
+                                    <p>{msg.content}</p>
                                     <span className="text-[10px] opacity-50 mt-1 block">
-                                        {msg.timestamp.toLocaleTimeString([], {
+                                        {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], {
                                             hour: "2-digit",
                                             minute: "2-digit",
                                         })}
@@ -121,7 +90,7 @@ export default function AiAssistant() {
                                 </div>
                             </div>
                         ))}
-                        {isTyping && (
+                        {messages.length > 0 && messages[messages.length - 1].role === 'user' && isLoading && (
                             <div className="flex justify-start">
                                 <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-200 shadow-sm flex gap-1 items-center">
                                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
@@ -130,24 +99,28 @@ export default function AiAssistant() {
                                 </div>
                             </div>
                         )}
+                        {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && isLoading && (
+                            // Still streaming...
+                            null
+                        )}
                         <div ref={messagesEndRef} />
                     </div>
 
                     {/* Input Area */}
                     <form
-                        onSubmit={handleSendMessage}
+                        onSubmit={handleSubmit}
                         className="p-3 bg-white border-t border-gray-100 flex gap-2"
                     >
                         <input
                             type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            value={input}
+                            onChange={handleInputChange}
                             placeholder="Ask me anything..."
                             className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
                         />
                         <button
                             type="submit"
-                            disabled={!inputValue.trim()}
+                            disabled={!input.trim() || isLoading}
                             className="bg-red-600 text-white p-2 rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             <Send size={18} />
