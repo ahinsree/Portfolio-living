@@ -1,26 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import AiAssistant from "@/components/AiAssistant";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: "Portfolio Living",
@@ -34,8 +15,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Fallback to standard Google Fonts link to avoid build-time fetch issues in CI */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+      </head>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${playfair.variable} antialiased font-sans text-gray-900 bg-white`}
+        className="antialiased font-sans text-gray-900 bg-white"
+        style={{
+          // @ts-ignore
+          "--font-inter": "'Inter', sans-serif",
+          "--font-space-grotesk": "'Space Grotesk', sans-serif",
+          "--font-playfair": "'Playfair Display', serif"
+        }}
       >
         {children}
         <AiAssistant />
