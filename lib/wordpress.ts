@@ -13,24 +13,30 @@ async function fetchAPI(query: string, { variables }: { variables?: Record<strin
     }
 
     if (!API_URL) {
-        throw new Error('WORDPRESS_API_URL is not defined in environment variables');
+        console.warn('WORDPRESS_API_URL is not defined. Skipping fetch.');
+        return null;
     }
 
-    const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: headers as Record<string, string>,
-        body: JSON.stringify({
-            query,
-            variables,
-        }),
-    });
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: headers as Record<string, string>,
+            body: JSON.stringify({
+                query,
+                variables,
+            }),
+        });
 
-    const json = await res.json();
-    if (json.errors) {
-        console.error(json.errors);
-        throw new Error('Failed to fetch API from WordPress');
+        const json = await res.json();
+        if (json.errors) {
+            console.error(json.errors);
+            return null;
+        }
+        return json.data;
+    } catch (error) {
+        console.error('WordPress Fetch Error:', error);
+        return null;
     }
-    return json.data;
 }
 
 export async function getAllPosts() {
@@ -60,7 +66,7 @@ export async function getAllPosts() {
     }
   `
     );
-    return data?.posts?.nodes;
+    return data?.posts?.nodes || [];
 }
 
 export async function getPostBySlug(slug: string) {
@@ -119,5 +125,5 @@ export async function getAllCategories() {
     }
   `
     );
-    return data?.categories?.nodes;
+    return data?.categories?.nodes || [];
 }
