@@ -178,7 +178,7 @@ export default function VideosPage() {
                         <Lock className="w-12 h-12 text-gray-500 mx-auto mb-6" />
                         <h2 className="text-3xl font-serif font-bold text-white mb-4">Ready to Apply These Systems?</h2>
                         <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">
-                            Information is potential power. Execution is real power. Let's build your custom roadmap together.
+                            Information is potential power. Execution is real power. Let&apos;s build your custom roadmap together.
                         </p>
                         <Link href="#contact" className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-gray-200 transition-colors">
                             Book Your Strategy Session <ArrowRight size={18} />

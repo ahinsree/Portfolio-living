@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "debug-gemini.js",
+    "test-chat.js",
+    "test-key-direct.js",
+    "test-chat.mjs",
   ]),
 ]);
 

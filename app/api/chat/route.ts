@@ -19,8 +19,8 @@ export async function POST(req: Request) {
         const { messages } = await req.json();
 
         const formattedMessages = messages
-            .filter((m: any) => m.content && m.content.trim() !== '')
-            .map((m: any) => ({
+            .filter((m: { content: string }) => m.content && m.content.trim() !== '')
+            .map((m: { role: string; content: string }) => ({
                 role: (m.role === 'user' || m.role === 'assistant' || m.role === 'system') ? m.role : 'user',
                 content: m.content,
             }));
@@ -40,10 +40,11 @@ export async function POST(req: Request) {
         });
 
         return result.toDataStreamResponse();
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('CHAT SERVER ERROR:', error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
         return new Response(
-            JSON.stringify({ error: error.message }),
+            JSON.stringify({ error: errorMessage }),
             { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
     }

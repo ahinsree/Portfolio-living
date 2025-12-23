@@ -1,14 +1,13 @@
-import { getAllPosts, getAllCategories } from "@/lib/wordpress";
+import { getAllPosts, getAllCategories, type WordPressPost, type WordPressCategory } from "@/lib/wordpress";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Newsletter from "@/components/Newsletter";
 import { ArrowRight, Clock } from "lucide-react";
 
 export default async function BlogsPage() {
-    const posts = await getAllPosts();
-    const categories = await getAllCategories();
+    const posts: WordPressPost[] = await getAllPosts();
+    const categories: WordPressCategory[] = await getAllCategories();
 
     // Featured post could be the first one
     const featuredPost = posts?.[0];
@@ -66,7 +65,7 @@ export default async function BlogsPage() {
                             >
                                 All
                             </Link>
-                            {categories?.map((category: any) => (
+                            {categories?.map((category: WordPressCategory) => (
                                 <Link
                                     key={category.slug}
                                     href={`/category/${category.slug}`}
@@ -84,7 +83,7 @@ export default async function BlogsPage() {
                     {/* Main Grid - 3 Columns */}
                     <div className="lg:col-span-3">
                         <div className="grid md:grid-cols-2 gap-8">
-                            {otherPosts?.map((article: any) => (
+                            {otherPosts?.map((article: WordPressPost) => (
                                 <Link href={`/blogs/${article.slug}`} key={article.id} className="group block h-full">
                                     <article className="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
                                         <div className="relative h-48 overflow-hidden bg-gray-100">

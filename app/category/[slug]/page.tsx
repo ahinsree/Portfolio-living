@@ -1,12 +1,43 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Play, TrendingUp, MessageCircle, Briefcase, User, Cpu } from "lucide-react";
+import { ArrowRight, BookOpen, Play, TrendingUp, MessageCircle, Briefcase, User, Cpu, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+interface CategoryArticle {
+    title: string;
+    link: string;
+    image: string;
+}
+
+interface CategoryVideo {
+    title: string;
+    duration: string;
+    link: string;
+}
+
+interface Category {
+    name: string;
+    headline: string;
+    philosophy: string;
+    icon: LucideIcon;
+    color: string;
+    bg: string;
+    service: {
+        title: string;
+        description: string;
+        link: string;
+    };
+    articles: CategoryArticle[];
+    videos: CategoryVideo[];
+    related: {
+        name: string;
+        slug: string;
+        message: string;
+    };
+}
+
 // Data content for the categories
-const CATEGORY_DATA: Record<string, any> = {
+const CATEGORY_DATA: Record<string, Category> = {
     investment: {
         name: "Investment",
         headline: "Investment: Architect Your Financial Freedom",
@@ -213,7 +244,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                             <h2 className="text-2xl font-bold text-gray-900">Top Reads</h2>
                         </div>
                         <div className="space-y-6">
-                            {category.articles.map((article: any, idx: number) => (
+                            {category.articles.map((article: CategoryArticle, idx: number) => (
                                 <Link href={article.link} key={idx} className="flex gap-4 group items-start">
                                     <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                                         {/* Placeholder for image */}
@@ -237,7 +268,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                             <h2 className="text-2xl font-bold text-gray-900">Watch & Learn</h2>
                         </div>
                         <div className="space-y-6">
-                            {category.videos.map((video: any, idx: number) => (
+                            {category.videos.map((video: CategoryVideo, idx: number) => (
                                 <Link href={video.link} key={idx} className="block group">
                                     <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden mb-3 border border-gray-100 shadow-sm">
                                         <div className="absolute inset-0 flex items-center justify-center">

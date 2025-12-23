@@ -44,7 +44,7 @@ export default function ServicesPage() {
     ];
 
     const whyUs = [
-        "Holistic Growth: We don't just fix your finances; we upgrade your entire operating system.",
+        "Holistic Growth: We don&apos;t just fix your finances; we upgrade your entire operating system.",
         "System-Based: No vague advice. Just proven, repeatable frameworks that actually work.",
         "Modern Relevance: Strategies specifically tailored for the connected, digital age.",
     ];
@@ -84,7 +84,7 @@ export default function ServicesPage() {
                                     {service.title}
                                 </h3>
                                 <p className="text-lg font-medium text-gray-800 mb-3 italic">
-                                    "{service.hook}"
+                                    &quot;{service.hook}&quot;
                                 </p>
                                 <p className="text-gray-600 leading-relaxed">
                                     {service.value}

@@ -1,23 +1,7 @@
 import Link from "next/link";
+import { type WordPressPost } from "@/lib/wordpress";
 
-interface Post {
-    id: string;
-    title: string;
-    excerpt: string;
-    slug: string;
-    featuredImage?: {
-        node: {
-            sourceUrl: string;
-        };
-    };
-    categories?: {
-        nodes: {
-            name: string;
-        }[];
-    };
-}
-
-export default function BlogGrid({ posts }: { posts: Post[] }) {
+export default function BlogGrid({ posts }: { posts: WordPressPost[] }) {
     // If no posts are provided, we could use the hardcoded ones as fallback or show nothing
     const displayPosts = posts?.length > 0 ? posts.slice(0, 3) : [];
 

@@ -101,7 +101,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-gray-900 text-sm mb-1">Strategy Call Scheduling</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed">You'll receive a personal calendar link to book your 1-on-1 session.</p>
+                                        <p className="text-sm text-gray-500 leading-relaxed">You&apos;ll receive a personal calendar link to book your 1-on-1 session.</p>
                                     </div>
                                 </li>
                                 <li className="flex gap-4">

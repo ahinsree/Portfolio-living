@@ -1,4 +1,4 @@
-import { getPostBySlug, getAllPosts } from "@/lib/wordpress";
+import { getPostBySlug, getAllPosts, type WordPressPost } from "@/lib/wordpress";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,13 +8,14 @@ import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
     const posts = await getAllPosts();
-    return posts.map((post: any) => ({
+    return posts.map((post: WordPressPost) => ({
         slug: post.slug,
     }));
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = await getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         notFound();
@@ -35,7 +36,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     {/* Header */}
                     <header className="mb-12">
                         <div className="flex items-center gap-3 mb-6">
-                            {post.categories?.nodes.map((cat: any) => (
+                            {post.categories?.nodes.map((cat: { slug: string; name: string }) => (
                                 <span key={cat.slug} className="bg-gray-100 text-gray-900 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                     {cat.name}
                                 </span>
@@ -79,7 +80,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                         prose-p:text-gray-700 prose-p:leading-relaxed
                         prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                         prose-img:rounded-2xl prose-img:shadow-lg"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
+                        dangerouslySetInnerHTML={{ __html: post.content || "" }}
                     />
                 </article>
             </main>

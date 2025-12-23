@@ -60,7 +60,7 @@ export default function About() {
                                     </div>
                                 </div>
                                 <p className="mt-8 text-gray-600 italic border-l-4 border-primary pl-4">
-                                    "Neglecting one exposes you to risk. Mastering both makes you antifragile."
+                                    &quot;Neglecting one exposes you to risk. Mastering both makes you antifragile.&quot;
                                 </p>
                             </div>
                             {/* Abstract Visual Representation */}
@@ -112,26 +112,26 @@ export default function About() {
                 <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">The Portfolio Approach</h2>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">We don't offer band-aids. We offer system upgrades.</p>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">We don&apos;t offer band-aids. We offer system upgrades.</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:border-primary/20 transition-colors">
                             <h3 className="font-bold text-xl text-gray-900 mb-4">Holistic Integration</h3>
                             <p className="text-gray-600">
-                                You don't just fix your finances; you optimize your psychology. Every part of the system feeds the others.
+                                You don&apos;t just fix your finances; you optimize your psychology. Every part of the system feeds the others.
                             </p>
                         </div>
                         <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:border-primary/20 transition-colors">
                             <h3 className="font-bold text-xl text-gray-900 mb-4">Compounding Growth</h3>
                             <p className="text-gray-600">
-                                You don't just get a promotion; you upgrade your communication to hold that room. Improvements compound over time.
+                                You don&apos;t just get a promotion; you upgrade your communication to hold that room. Improvements compound over time.
                             </p>
                         </div>
                         <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:border-primary/20 transition-colors">
                             <h3 className="font-bold text-xl text-gray-900 mb-4">Engineered Freedom</h3>
                             <p className="text-gray-600">
-                                We don't believe in luck. We believe in constructing a life that is designed to succeed by default.
+                                We don&apos;t believe in luck. We believe in constructing a life that is designed to succeed by default.
                             </p>
                         </div>
                     </div>

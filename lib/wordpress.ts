@@ -1,6 +1,40 @@
+export interface WordPressPost {
+    id: string;
+    title: string;
+    excerpt: string;
+    content?: string;
+    slug: string;
+    date: string;
+    featuredImage?: {
+        node: {
+            sourceUrl: string;
+        };
+    };
+    categories: {
+        nodes: {
+            name: string;
+            slug: string;
+        }[];
+    };
+    author?: {
+        node: {
+            name: string;
+            avatar?: {
+                url: string;
+            };
+        };
+    };
+}
+
+export interface WordPressCategory {
+    name: string;
+    slug: string;
+    count?: number;
+}
+
 const API_URL = process.env.WORDPRESS_API_URL;
 
-async function fetchAPI(query: string, { variables }: { variables?: Record<string, any> } = {}) {
+async function fetchAPI(query: string, { variables }: { variables?: Record<string, unknown> } = {}) {
     type Headers = {
         'Content-Type': string;
         'Authorization'?: string;
@@ -39,7 +73,7 @@ async function fetchAPI(query: string, { variables }: { variables?: Record<strin
     }
 }
 
-export async function getAllPosts() {
+export async function getAllPosts(): Promise<WordPressPost[]> {
     const data = await fetchAPI(
         `
     query AllPosts {
@@ -69,7 +103,7 @@ export async function getAllPosts() {
     return data?.posts?.nodes || [];
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
     const data = await fetchAPI(
         `
     query PostBySlug($id: ID!, $idType: PostIdType!) {
@@ -111,7 +145,7 @@ export async function getPostBySlug(slug: string) {
     return data?.post;
 }
 
-export async function getAllCategories() {
+export async function getAllCategories(): Promise<WordPressCategory[]> {
     const data = await fetchAPI(
         `
     query AllCategories {

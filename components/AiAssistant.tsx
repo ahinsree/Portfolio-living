@@ -81,12 +81,14 @@ export default function AiAssistant() {
                                         }`}
                                 >
                                     <p>{msg.content}</p>
-                                    <span className="text-[10px] opacity-50 mt-1 block">
-                                        {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
-                                    </span>
+                                    {msg.createdAt && (
+                                        <span className="text-[10px] opacity-50 mt-1 block">
+                                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         ))}
