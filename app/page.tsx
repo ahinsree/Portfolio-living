@@ -5,15 +5,18 @@ import BlogGrid from "@/components/BlogGrid";
 import VideoSection from "@/components/VideoSection";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
+import { getAllPosts } from "@/lib/wordpress";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await getAllPosts().catch(() => []);
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main>
         <Hero />
         <FeatureGrid />
-        <BlogGrid />
+        <BlogGrid posts={posts} />
         <VideoSection />
         <Newsletter />
       </main>
