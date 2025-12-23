@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, Play, TrendingUp, MessageCircle, Briefcase, User, Cpu, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getCategoryBySlug, getPostsByCategory, getAllCategories, type WordPressPost } from "@/lib/wordpress";
 
 interface CategoryArticle {
     title: string;
@@ -36,7 +37,15 @@ interface Category {
     };
 }
 
-// Data content for the categories
+const ICON_MAP: Record<string, LucideIcon> = {
+    TrendingUp,
+    MessageCircle,
+    Briefcase,
+    User,
+    Cpu,
+};
+
+// Original hardcoded data serves as fallback
 const CATEGORY_DATA: Record<string, Category> = {
     investment: {
         name: "Investment",
@@ -50,11 +59,7 @@ const CATEGORY_DATA: Record<string, Category> = {
             description: "Stop guessing. Get a personalized roadmap to financial independence with our Wealth Architecture coaching.",
             link: "/services#investment"
         },
-        articles: [
-            { title: "The 'Sleep Well' Portfolio", link: "/blogs/1", image: "/blog-1.jpg" },
-            { title: "First $100k: The Hardest Milestone", link: "/blogs/2", image: "/blog-2.jpg" },
-            { title: "Diversification 101", link: "/blogs/6", image: "/blog-6.jpg" }
-        ],
+        articles: [],
         videos: [
             { title: "Wealth Building Habits #1", duration: "10:00", link: "/videos" },
             { title: "Understanding Risk vs Reward", duration: "15:30", link: "/videos" }
@@ -77,11 +82,7 @@ const CATEGORY_DATA: Record<string, Category> = {
             description: "Stop being ignored. Learn psychological techniques to command the room with our Communication Mastery coaching.",
             link: "/services#communication"
         },
-        articles: [
-            { title: "Active Listening: The Underrated Skill", link: "/blogs/4", image: "/blog-4.jpg" },
-            { title: "Negotiation Tactics for Everyday Life", link: "/blogs/7", image: "/blog-3.jpg" }, // Reuse placeholder
-            { title: "Public Speaking for Introverts", link: "/blogs/8", image: "/blog-1.jpg" }
-        ],
+        articles: [],
         videos: [
             { title: "Negotiate Like a Hostage Negotiator", duration: "15:20", link: "/videos" },
             { title: "The Art of the Pause", duration: "06:10", link: "/videos" }
@@ -104,11 +105,7 @@ const CATEGORY_DATA: Record<string, Category> = {
             description: "Stop waiting to be noticed. Build a strategic Career Moat with our Professional Acceleration coaching.",
             link: "/services#career"
         },
-        articles: [
-            { title: "Mastering the Art of Negotiation", link: "/blogs/2", image: "/blog-2.jpg" },
-            { title: "Managing Up Explained", link: "/blogs/9", image: "/blog-1.jpg" },
-            { title: "The Future of Work", link: "/blogs/10", image: "/blog-4.jpg" }
-        ],
+        articles: [],
         videos: [
             { title: "The 'Career Moat' Concept", duration: "18:00", link: "/videos" },
             { title: "Managing Up: The Secret to Promotion", duration: "10:15", link: "/videos" }
@@ -131,11 +128,7 @@ const CATEGORY_DATA: Record<string, Category> = {
             description: "Stop relying on willpower. Build a bulletproof system for productivity and health with our High Performance coaching.",
             link: "/services#personal-development"
         },
-        articles: [
-            { title: "Sleep Optimization for High Performers", link: "/blogs/5", image: "/blog-5.jpg" },
-            { title: "Digital Minimalism", link: "/blogs/3", image: "/blog-3.jpg" },
-            { title: "The Power of Atomic Habits", link: "/blogs/11", image: "/blog-2.jpg" }
-        ],
+        articles: [],
         videos: [
             { title: "Energy Management > Time Management", duration: "14:30", link: "/videos" },
             { title: "Designing Your Morning Routine", duration: "09:50", link: "/videos" }
@@ -158,11 +151,7 @@ const CATEGORY_DATA: Record<string, Category> = {
             description: "Stop doing busy work. Learn to clone yourself with AI tools in our Future Tech workshop.",
             link: "/services#technology"
         },
-        articles: [
-            { title: "Digital Minimalism in an AI World", link: "/blogs/3", image: "/blog-3.jpg" },
-            { title: "AI Tools You Need Now", link: "/blogs/12", image: "/blog-4.jpg" },
-            { title: "The Blockchain Revolution", link: "/blogs/13", image: "/blog-1.jpg" }
-        ],
+        articles: [],
         videos: [
             { title: "AI for the Non-Technical", duration: "22:15", link: "/videos" },
             { title: "Crypto & Blockchain: Signal vs. Noise", duration: "16:40", link: "/videos" }
@@ -178,10 +167,14 @@ const CATEGORY_DATA: Record<string, Category> = {
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    const category = CATEGORY_DATA[slug];
+    // 1. Fetch live data from WordPress
+    const wpCategory = await getCategoryBySlug(slug);
+    const wpPosts = await getPostsByCategory(slug);
 
+    // 2. Build Category Object (Prefer WP, fallback to hardcoded)
+    const fallback = CATEGORY_DATA[slug];
 
-    if (!category) {
+    if (!fallback && !wpCategory) {
         return (
             <div className="min-h-screen flex flex-col">
                 <Header />
@@ -195,6 +188,32 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         );
     }
 
+    // Merge WordPress data with fallbacks
+    const category: Category = {
+        name: wpCategory?.name || fallback?.name || "",
+        headline: wpCategory?.acfFields?.headline || fallback?.headline || "",
+        philosophy: wpCategory?.acfFields?.philosophy || wpCategory?.description || fallback?.philosophy || "",
+        icon: ICON_MAP[wpCategory?.acfFields?.iconName || ""] || fallback?.icon || TrendingUp,
+        color: wpCategory?.acfFields?.colorClass || fallback?.color || "text-gray-900",
+        bg: wpCategory?.acfFields?.bgClass || fallback?.bg || "bg-gray-50",
+        service: {
+            title: wpCategory?.acfFields?.serviceTitle || fallback?.service?.title || "",
+            description: wpCategory?.acfFields?.serviceDescription || fallback?.service?.description || "",
+            link: wpCategory?.acfFields?.serviceLink || fallback?.service?.link || "/contact"
+        },
+        articles: wpPosts.map((p) => ({
+            title: p.title,
+            link: `/blogs/${p.slug}`,
+            image: p.featuredImage?.node?.sourceUrl || ""
+        })),
+        videos: fallback?.videos || [], // Videos still hardcoded until we set up Video CPT mapping
+        related: {
+            name: wpCategory?.acfFields?.relatedCategorySlug || fallback?.related?.name || "",
+            slug: wpCategory?.acfFields?.relatedCategorySlug || fallback?.related?.slug || "",
+            message: wpCategory?.acfFields?.relatedMessage || fallback?.related?.message || ""
+        }
+    };
+
     const Icon = category.icon;
 
     return (
@@ -207,9 +226,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     <div className={`w-20 h-20 ${category.bg} rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm bg-white`}>
                         <Icon className={`w-10 h-10 ${category.color}`} />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 max-w-4xl mx-auto leading-tight">
-                        {category.headline}
-                    </h1>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 max-w-4xl mx-auto leading-tight" dangerouslySetInnerHTML={{ __html: category.headline }} />
                 </section>
 
                 {/* 2. The Philosophy */}
@@ -244,20 +261,25 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                             <h2 className="text-2xl font-bold text-gray-900">Top Reads</h2>
                         </div>
                         <div className="space-y-6">
-                            {category.articles.map((article: CategoryArticle, idx: number) => (
-                                <Link href={article.link} key={idx} className="flex gap-4 group items-start">
-                                    <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                                        {/* Placeholder for image */}
-                                        <div className="w-full h-full bg-slate-200"></div>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors mb-2">
-                                            {article.title}
-                                        </h3>
-                                        <span className="text-sm text-gray-500 underline decoration-gray-300 group-hover:decoration-primary">Read Article</span>
-                                    </div>
-                                </Link>
-                            ))}
+                            {category.articles.length > 0 ? (
+                                category.articles.map((article: CategoryArticle, idx: number) => (
+                                    <Link href={article.link} key={idx} className="flex gap-4 group items-start">
+                                        <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                            <img
+                                                src={article.image || "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&q=80&w=400"}
+                                                alt={article.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors mb-2" dangerouslySetInnerHTML={{ __html: article.title }} />
+                                            <span className="text-sm text-gray-500 underline decoration-gray-300 group-hover:decoration-primary">Read Article</span>
+                                        </div>
+                                    </Link>
+                                ))
+                            ) : (
+                                <p className="text-gray-500 italic">No live articles in this category yet.</p>
+                            )}
                         </div>
                     </div>
 
@@ -308,7 +330,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 }
 
 export async function generateStaticParams() {
-    return Object.keys(CATEGORY_DATA).map((slug) => ({
-        slug: slug,
-    }));
+    const categories = await getAllCategories().catch(() => []);
+    const liveSlugs = categories.map(c => ({ slug: c.slug }));
+    const fallbackSlugs = Object.keys(CATEGORY_DATA).map((slug) => ({ slug }));
+
+    // Return union of both
+    return [...liveSlugs, ...fallbackSlugs];
 }

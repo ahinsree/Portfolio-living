@@ -30,6 +30,38 @@ export interface WordPressCategory {
     name: string;
     slug: string;
     count?: number;
+    description?: string;
+    // Fields from ACF (if installed)
+    acfFields?: {
+        headline?: string;
+        philosophy?: string;
+        iconName?: string;
+        colorClass?: string;
+        bgClass?: string;
+        serviceTitle?: string;
+        serviceDescription?: string;
+        serviceLink?: string;
+        relatedCategorySlug?: string;
+        relatedMessage?: string;
+    };
+}
+
+export interface WordPressVideo {
+    id: string;
+    title: string;
+    slug: string;
+    content?: string;
+    featuredImage?: {
+        node: {
+            sourceUrl: string;
+        };
+    };
+    videoFields?: {
+        videoUrl: string;
+        duration: string;
+        playlistName: string;
+        playlistDescription: string;
+    };
 }
 
 const API_URL = process.env.WORDPRESS_API_URL;
@@ -160,4 +192,99 @@ export async function getAllCategories(): Promise<WordPressCategory[]> {
   `
     );
     return data?.categories?.nodes || [];
+}
+
+export async function getCategoryBySlug(slug: string): Promise<WordPressCategory | null> {
+    const data = await fetchAPI(
+        `
+    query CategoryBySlug($id: ID!, $idType: CategoryIdType!) {
+      category(id: $id, idType: $idType) {
+        name
+        slug
+        description
+        # We assume ACF is used for these extra fields
+        # If not using ACF, these will return null or need adjustment
+        # Replace 'acfFields' with the actual field group name in your GraphQL schema
+        acfFields: categoryDetails {
+          headline
+          philosophy
+          iconName
+          colorClass
+          bgClass
+          serviceTitle
+          serviceDescription
+          serviceLink
+          relatedCategorySlug
+          relatedMessage
+        }
+      }
+    }
+  `,
+        {
+            variables: {
+                id: slug,
+                idType: 'SLUG',
+            },
+        }
+    );
+    return data?.category;
+}
+
+export async function getPostsByCategory(categorySlug: string): Promise<WordPressPost[]> {
+    const data = await fetchAPI(
+        `
+    query PostsByCategory($categoryName: String!) {
+      posts(where: {categoryName: $categoryName}) {
+        nodes {
+          id
+          title
+          excerpt
+          slug
+          date
+          featuredImage {
+            node {
+              sourceUrl
+            }
+          }
+        }
+      }
+    }
+  `,
+        {
+            variables: {
+                categoryName: categorySlug,
+            },
+        }
+    );
+    return data?.posts?.nodes || [];
+}
+
+export async function getAllVideos(): Promise<WordPressVideo[]> {
+    const data = await fetchAPI(
+        `
+    query AllVideos {
+      # Assuming a Custom Post Type called 'videos'
+      videos(first: 50) {
+        nodes {
+          id
+          title
+          slug
+          featuredImage {
+            node {
+              sourceUrl
+            }
+          }
+          videoFields: videoDetails {
+            videoUrl
+            duration
+            playlistName
+            playlistDescription
+          }
+        }
+      }
+    }
+  `
+    );
+    // If videos CPT doesn't exist, this might return null
+    return data?.videos?.nodes || [];
 }
