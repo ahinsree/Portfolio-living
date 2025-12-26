@@ -1,290 +1,215 @@
 export interface WordPressPost {
-    id: string;
-    title: string;
-    excerpt: string;
-    content?: string;
-    slug: string;
-    date: string;
-    featuredImage?: {
-        node: {
-            sourceUrl: string;
-        };
+  id: string;
+  title: string;
+  excerpt: string;
+  content?: string;
+  slug: string;
+  date: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
     };
-    categories: {
-        nodes: {
-            name: string;
-            slug: string;
-        }[];
+  };
+  categories: {
+    nodes: {
+      name: string;
+      slug: string;
+    }[];
+  };
+  author?: {
+    node: {
+      name: string;
+      avatar?: {
+        url: string;
+      };
     };
-    author?: {
-        node: {
-            name: string;
-            avatar?: {
-                url: string;
-            };
-        };
-    };
+  };
 }
 
 export interface WordPressCategory {
-    name: string;
-    slug: string;
-    count?: number;
-    description?: string;
-    // Fields from ACF (if installed)
-    acfFields?: {
-        headline?: string;
-        philosophy?: string;
-        iconName?: string;
-        colorClass?: string;
-        bgClass?: string;
-        serviceTitle?: string;
-        serviceDescription?: string;
-        serviceLink?: string;
-        relatedCategorySlug?: string;
-        relatedMessage?: string;
-    };
+  id: number;
+  name: string;
+  slug: string;
+  count?: number;
+  description?: string;
+  acfFields?: {
+    headline?: string;
+    philosophy?: string;
+    iconName?: string;
+    colorClass?: string;
+    bgClass?: string;
+    serviceTitle?: string;
+    serviceDescription?: string;
+    serviceLink?: string;
+    relatedCategorySlug?: string;
+    relatedMessage?: string;
+  };
 }
 
 export interface WordPressVideo {
-    id: string;
-    title: string;
-    slug: string;
-    content?: string;
-    featuredImage?: {
-        node: {
-            sourceUrl: string;
-        };
+  id: string;
+  title: string;
+  slug: string;
+  content?: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
     };
-    videoFields?: {
-        videoUrl: string;
-        duration: string;
-        playlistName: string;
-        playlistDescription: string;
-    };
+  };
+  videoFields?: {
+    videoUrl: string;
+    duration: string;
+    playlistName: string;
+    playlistDescription: string;
+  };
 }
 
-const API_URL = process.env.WORDPRESS_API_URL;
+const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 
-async function fetchAPI(query: string, { variables }: { variables?: Record<string, unknown> } = {}) {
-    type Headers = {
-        'Content-Type': string;
-        'Authorization'?: string;
-    };
-
-    const headers: Headers = { 'Content-Type': 'application/json' };
-
-    if (process.env.WORDPRESS_AUTH_REFRESH_TOKEN) {
-        headers['Authorization'] = `Bearer ${process.env.WORDPRESS_AUTH_REFRESH_TOKEN}`;
-    }
-
-    if (!API_URL) {
-        console.warn('WORDPRESS_API_URL is not defined. Skipping fetch.');
-        return null;
-    }
-
-    try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: headers as Record<string, string>,
-            body: JSON.stringify({
-                query,
-                variables,
-            }),
-        });
-
-        const json = await res.json();
-        if (json.errors) {
-            console.error(json.errors);
-            return null;
+function mapPost(post: any): WordPressPost {
+  return {
+    id: post.id.toString(),
+    title: post.title.rendered,
+    excerpt: post.excerpt.rendered,
+    content: post.content?.rendered,
+    slug: post.slug,
+    date: post.date,
+    featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
+      node: {
+        sourceUrl: post._embedded['wp:featuredmedia'][0].source_url
+      }
+    } : undefined,
+    categories: {
+      nodes: post._embedded?.['wp:term']?.[0]?.map((term: any) => ({
+        name: term.name,
+        slug: term.slug
+      })) || []
+    },
+    author: post._embedded?.['author']?.[0] ? {
+      node: {
+        name: post._embedded['author'][0].name,
+        avatar: {
+          url: post._embedded['author'][0].avatar_urls?.['96']
         }
-        return json.data;
-    } catch (error) {
-        console.error('WordPress Fetch Error:', error);
-        return null;
-    }
+      }
+    } : undefined
+  };
 }
 
 export async function getAllPosts(): Promise<WordPressPost[]> {
-    const data = await fetchAPI(
-        `
-    query AllPosts {
-      posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
-        nodes {
-          id
-          title
-          excerpt
-          slug
-          date
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-          categories {
-            nodes {
-              name
-              slug
-            }
-          }
-        }
-      }
-    }
-  `
-    );
-    return data?.posts?.nodes || [];
+  try {
+    const res = await fetch(`${BASE_URL}/posts?_embed&per_page=20`, {
+      next: { revalidate: 3600 } // Cache for 1 hour
+    });
+    if (!res.ok) throw new Error('Failed to fetch posts');
+    const posts = await res.json();
+    return posts.map(mapPost);
+  } catch (error) {
+    console.error('WordPress Fetch Error (getAllPosts):', error);
+    return [];
+  }
 }
 
 export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
-    const data = await fetchAPI(
-        `
-    query PostBySlug($id: ID!, $idType: PostIdType!) {
-      post(id: $id, idType: $idType) {
-        id
-        title
-        content
-        date
-        slug
-        featuredImage {
-          node {
-            sourceUrl
-          }
-        }
-        categories {
-          nodes {
-            name
-            slug
-          }
-        }
-        author {
-          node {
-            name
-            avatar {
-              url
-            }
-          }
-        }
-      }
-    }
-  `,
-        {
-            variables: {
-                id: slug,
-                idType: 'SLUG',
-            },
-        }
-    );
-    return data?.post;
+  try {
+    const res = await fetch(`${BASE_URL}/posts?slug=${slug}&_embed`, {
+      next: { revalidate: 3600 }
+    });
+    if (!res.ok) throw new Error('Failed to fetch post');
+    const posts = await res.json();
+    if (posts.length === 0) return null;
+    return mapPost(posts[0]);
+  } catch (error) {
+    console.error('WordPress Fetch Error (getPostBySlug):', error);
+    return null;
+  }
 }
 
 export async function getAllCategories(): Promise<WordPressCategory[]> {
-    const data = await fetchAPI(
-        `
-    query AllCategories {
-      categories {
-        nodes {
-          name
-          slug
-          count
-        }
-      }
-    }
-  `
-    );
-    return data?.categories?.nodes || [];
+  try {
+    const res = await fetch(`${BASE_URL}/categories?per_page=100`, {
+      next: { revalidate: 3600 }
+    });
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    const categories = await res.json();
+    return categories.map((cat: any) => ({
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug,
+      count: cat.count,
+      description: cat.description,
+      acfFields: cat.acf // Assuming ACF to REST API is active
+    }));
+  } catch (error) {
+    console.error('WordPress Fetch Error (getAllCategories):', error);
+    return [];
+  }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<WordPressCategory | null> {
-    const data = await fetchAPI(
-        `
-    query CategoryBySlug($id: ID!, $idType: CategoryIdType!) {
-      category(id: $id, idType: $idType) {
-        name
-        slug
-        description
-        # We assume ACF is used for these extra fields
-        # If not using ACF, these will return null or need adjustment
-        # Replace 'acfFields' with the actual field group name in your GraphQL schema
-        acfFields: categoryDetails {
-          headline
-          philosophy
-          iconName
-          colorClass
-          bgClass
-          serviceTitle
-          serviceDescription
-          serviceLink
-          relatedCategorySlug
-          relatedMessage
-        }
-      }
-    }
-  `,
-        {
-            variables: {
-                id: slug,
-                idType: 'SLUG',
-            },
-        }
-    );
-    return data?.category;
+  try {
+    const res = await fetch(`${BASE_URL}/categories?slug=${slug}`, {
+      next: { revalidate: 3600 }
+    });
+    if (!res.ok) throw new Error('Failed to fetch category');
+    const categories = await res.json();
+    if (categories.length === 0) return null;
+    const cat = categories[0];
+    return {
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug,
+      count: cat.count,
+      description: cat.description,
+      acfFields: cat.acf
+    };
+  } catch (error) {
+    console.error('WordPress Fetch Error (getCategoryBySlug):', error);
+    return null;
+  }
 }
 
 export async function getPostsByCategory(categorySlug: string): Promise<WordPressPost[]> {
-    const data = await fetchAPI(
-        `
-    query PostsByCategory($categoryName: String!) {
-      posts(where: {categoryName: $categoryName}) {
-        nodes {
-          id
-          title
-          excerpt
-          slug
-          date
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-        }
-      }
-    }
-  `,
-        {
-            variables: {
-                categoryName: categorySlug,
-            },
-        }
-    );
-    return data?.posts?.nodes || [];
+  try {
+    const category = await getCategoryBySlug(categorySlug);
+    if (!category) return [];
+
+    const res = await fetch(`${BASE_URL}/posts?categories=${category.id}&_embed&per_page=20`, {
+      next: { revalidate: 3600 }
+    });
+    if (!res.ok) throw new Error('Failed to fetch posts by category');
+    const posts = await res.json();
+    return posts.map(mapPost);
+  } catch (error) {
+    console.error('WordPress Fetch Error (getPostsByCategory):', error);
+    return [];
+  }
 }
 
 export async function getAllVideos(): Promise<WordPressVideo[]> {
-    const data = await fetchAPI(
-        `
-    query AllVideos {
-      # Assuming a Custom Post Type called 'videos'
-      videos(first: 50) {
-        nodes {
-          id
-          title
-          slug
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-          videoFields: videoDetails {
-            videoUrl
-            duration
-            playlistName
-            playlistDescription
-          }
-        }
-      }
+  try {
+    // Assuming 'videos' is a public custom post type in REST
+    const res = await fetch(`${BASE_URL}/videos?_embed&per_page=50`, {
+      next: { revalidate: 3600 }
+    });
+    if (!res.ok) {
+      // If custom post type is not exposed or doesn't exist, return empty
+      return [];
     }
-  `
-    );
-    // If videos CPT doesn't exist, this might return null
-    return data?.videos?.nodes || [];
+    const videos = await res.json();
+    return videos.map((video: any) => ({
+      id: video.id.toString(),
+      title: video.title.rendered,
+      slug: video.slug,
+      featuredImage: video._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
+        node: {
+          sourceUrl: video._embedded['wp:featuredmedia'][0].source_url
+        }
+      } : undefined,
+      videoFields: video.acf || video.video_details // Map based on how ACF is exposed
+    }));
+  } catch (error) {
+    console.error('WordPress Fetch Error (getAllVideos):', error);
+    return [];
+  }
 }

@@ -25,7 +25,7 @@ export default function Header() {
                     <div className="flex-shrink-0">
                         <Link
                             href="/"
-                            className="font-display font-bold text-xl tracking-tight text-gray-900 transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-primary hover:via-secondary hover:to-accent active:text-transparent active:bg-clip-text active:bg-gradient-to-r active:from-primary active:via-secondary active:to-accent"
+                            className="font-display font-black text-xl tracking-[0.1em] text-gray-900 transition-all duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-primary hover:via-secondary hover:to-accent"
                         >
                             PORTFOLIO LIVING
                         </Link>
@@ -46,7 +46,7 @@ export default function Header() {
 
                     {/* CTA Button */}
                     <div className="hidden md:flex items-center">
-                        <button className="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+                        <button className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/20">
                             Subscribe
                         </button>
                     </div>

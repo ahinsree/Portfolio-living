@@ -1,10 +1,10 @@
-import { Play, Lock, Clock, ArrowRight } from "lucide-react";
+import { Play, Lock, Clock, ArrowRight, Video } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getAllVideos, type WordPressVideo } from "@/lib/wordpress";
 
-interface Video {
+interface VideoItem {
     title: string;
     duration: string;
     thumbnail: string;
@@ -15,7 +15,7 @@ interface Playlist {
     title: string;
     category: string;
     description: string;
-    videos: Video[];
+    videos: VideoItem[];
 }
 
 const FALLBACK_PLAYLISTS: Playlist[] = [
@@ -27,12 +27,12 @@ const FALLBACK_PLAYLISTS: Playlist[] = [
             {
                 title: "The 'Sleep Well' Portfolio Strategy",
                 duration: "12:34",
-                thumbnail: "/video-wealth-1.jpg"
+                thumbnail: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800"
             },
             {
                 title: "First $100k: The Hardest Milestone",
                 duration: "08:45",
-                thumbnail: "/video-wealth-2.jpg"
+                thumbnail: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=800"
             }
         ]
     },
@@ -44,7 +44,7 @@ const FALLBACK_PLAYLISTS: Playlist[] = [
             {
                 title: "Negotiate Like a Hostage Negotiator",
                 duration: "15:20",
-                thumbnail: "/video-comm-1.jpg"
+                thumbnail: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800"
             }
         ]
     }
@@ -54,7 +54,7 @@ export default async function VideosPage() {
     // 1. Fetch live videos from WordPress
     const wpVideos = await getAllVideos();
 
-    // 2. Group WP videos into playlists (by category/group name if provided)
+    // 2. Group WP videos into playlists
     const playlists: Playlist[] = [];
 
     if (wpVideos.length > 0) {
@@ -69,7 +69,7 @@ export default async function VideosPage() {
             const groupVideos = groups[name];
             playlists.push({
                 title: name,
-                category: "Insights", // Could be dynamic
+                category: "Insights",
                 description: groupVideos[0].videoFields?.playlistDescription || "A curated series of deep dives.",
                 videos: groupVideos.map(v => ({
                     title: v.title,
@@ -85,73 +85,85 @@ export default async function VideosPage() {
     const displayPlaylists = playlists.length > 0 ? playlists : FALLBACK_PLAYLISTS;
 
     return (
-        <div className="min-h-screen bg-gray-900 text-gray-100 font-sans selection:bg-accent-tan selection:text-gray-900">
+        <div className="min-h-screen bg-white font-sans selection:bg-primary selection:text-white">
             <Header />
 
-            <main className="pt-24 pb-20">
+            <main className="pt-32 pb-24">
                 {/* Hero Section */}
-                <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-24 text-center">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-3/4 bg-red-900/20 blur-[120px] rounded-full -z-10" />
-                    <h1 className="text-5xl md:text-7xl font-serif font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent pb-2">
-                        The Knowledge Vault.
+                <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-20 text-center">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-primary/5 blur-[120px] rounded-full -z-10" />
+                    <span className="text-primary text-xs font-black uppercase tracking-[0.4em] mb-8 block">The Masterclass Library</span>
+                    <h1 className="text-[54px] md:text-[60px] font-display font-bold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+                        Insights <br />
+                        <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-bold">Visualized.</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
-                        Visual blueprints to upgrade your wealth, career, and mindset. <br className="hidden md:block" />
-                        Watch masterclasses designed to give you an <span className="text-white font-medium">unfair advantage</span>.
-                    </p>
+
+                    <div className="max-w-4xl mx-auto mt-4 pt-4 border-t border-gray-100">
+                        <p className="text-[20px] md:text-[22px] text-gray-400 font-light leading-relaxed tracking-tight">
+                            Visual blueprints designed to upgrade your wealth, career, and mindset. Watch masterclasses that give you an <span className="text-gray-900 font-medium">unfair advantage.</span>
+                        </p>
+                    </div>
                 </section>
 
                 {/* Featured Video - Manifesto */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
-                    <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border border-gray-800 group cursor-pointer bg-gray-950">
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10" />
-                        <div className="absolute inset-0 flex items-center justify-center z-20 group-hover:scale-110 transition-transform duration-500">
-                            <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-                                <Play fill="white" className="w-8 h-8 text-white translate-x-1" />
+                    <div className="relative aspect-[21/9] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group cursor-pointer bg-gray-100">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 group-hover:scale-110 transition-all duration-500">
+                                <Play fill="white" className="w-10 h-10 text-white translate-x-1" />
                             </div>
                         </div>
 
-                        <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 max-w-3xl">
-                            <div className="flex items-center gap-3 mb-3">
-                                <span className="text-red-500 font-bold tracking-wider text-xs uppercase">Start Here</span>
-                                <div className="h-px w-12 bg-gray-700"></div>
+                        <div className="absolute bottom-0 left-0 p-12 md:p-16 z-20 max-w-3xl text-white">
+                            <div className="flex items-center gap-4 mb-6">
+                                <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-white/30">Start Here</span>
+                                <div className="h-[2px] w-12 bg-primary"></div>
                             </div>
-                            <h2 className="text-4xl font-display font-bold text-white mb-4">The Portfolio Living Manifesto</h2>
-                            <p className="text-gray-300 text-lg">Why your life is your most valuable asset class—and how to manage it for maximum return.</p>
+                            <h2 className="text-[32px] md:text-[48px] font-sans font-bold mb-4">The Portfolio Living Manifesto</h2>
+                            <p className="text-white/80 text-lg font-light leading-relaxed">Why your life is your most valuable asset class—and how to manage it for maximum return.</p>
                         </div>
                     </div>
                 </section>
 
                 {/* Playlists */}
-                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-32">
                     {displayPlaylists.map((playlist, idx) => (
                         <div key={idx}>
-                            <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-gray-800 pb-4">
-                                <div>
-                                    <span className="text-red-500 font-mono text-sm tracking-widest uppercase mb-2 block">{playlist.category}</span>
-                                    <h3 className="text-3xl font-serif text-white">{playlist.title}</h3>
+                            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8 border-b border-gray-100 pb-12">
+                                <div className="max-w-xl">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-2 h-2 bg-primary rounded-full" />
+                                        <span className="text-primary font-black text-xs tracking-[0.2em] uppercase">{playlist.category}</span>
+                                    </div>
+                                    <h3 className="text-3xl font-sans font-bold text-gray-900 mb-4">{playlist.title}</h3>
+                                    <p className="text-gray-500 text-lg font-light leading-relaxed">{playlist.description}</p>
                                 </div>
-                                <p className="text-gray-500 text-sm max-w-xs text-right md:text-left">{playlist.description}</p>
+                                <div className="flex items-center gap-2 text-primary font-bold text-sm hover:underline cursor-pointer group">
+                                    View full series <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-8">
+                            <div className="grid md:grid-cols-2 gap-12">
                                 {playlist.videos.map((video, vIdx) => (
                                     <div key={vIdx} className="group cursor-pointer">
-                                        <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden mb-4 border border-gray-800 hover:border-gray-600 transition-colors">
-                                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10" />
-                                            <div className="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-mono px-2 py-1 rounded z-20 flex items-center gap-1">
-                                                <Clock size={10} /> {video.duration}
+                                        <div className="relative aspect-video bg-gray-100 rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-gray-100 group-hover:shadow-2xl transition-all duration-500">
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all z-10" />
+                                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-gray-900 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full z-20 shadow-sm">
+                                                {video.duration}
                                             </div>
                                             <img
                                                 src={video.thumbnail}
                                                 alt={video.title}
-                                                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                                             />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                                                <Play fill="white" className="w-12 h-12 text-white drop-shadow-lg" />
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                                                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-xl">
+                                                    <Play fill="white" className="w-6 h-6 text-white translate-x-1" />
+                                                </div>
                                             </div>
                                         </div>
-                                        <h4 className="text-xl font-medium text-gray-200 group-hover:text-white transition-colors">{video.title}</h4>
+                                        <h4 className="text-[22px] font-sans font-bold text-gray-900 group-hover:text-primary transition-colors leading-tight">{video.title}</h4>
                                     </div>
                                 ))}
                             </div>
@@ -159,24 +171,27 @@ export default async function VideosPage() {
                     ))}
                 </section>
 
-                {/* CTA */}
-                <section className="mt-32 border-t border-gray-800 bg-gray-950">
-                    <div className="max-w-4xl mx-auto px-4 py-24 text-center">
-                        <Lock className="w-12 h-12 text-gray-500 mx-auto mb-6" />
-                        <h2 className="text-3xl font-serif font-bold text-white mb-4">Ready to Apply These Systems?</h2>
-                        <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">
+                {/* Final CTA */}
+                <section className="mt-40 bg-gray-50 rounded-[4rem] mx-4 md:mx-12 overflow-hidden border border-gray-100">
+                    <div className="max-w-4xl mx-auto px-4 py-32 text-center relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -ml-32 -mb-32 blur-3xl" />
+
+                        <div className="w-20 h-20 bg-white shadow-xl rounded-full flex items-center justify-center mx-auto mb-10 border border-gray-100">
+                            <Lock className="w-8 h-8 text-primary" />
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-sans font-bold text-gray-900 mb-6 px-4">Ready to apply these systems?</h2>
+                        <p className="text-xl text-gray-500 mb-12 max-w-xl mx-auto font-light leading-relaxed">
                             Information is potential power. Execution is real power. Let&apos;s build your custom roadmap together.
                         </p>
-                        <Link href="/contact" className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-gray-200 transition-colors">
-                            Book Your Strategy Session <ArrowRight size={18} />
+                        <Link href="/contact" className="inline-flex items-center gap-3 bg-primary text-white px-10 py-5 rounded-full font-bold hover:bg-secondary transition-all shadow-xl shadow-primary/20 hover:shadow-2xl active:scale-[0.98]">
+                            Book Strategy Session <ArrowRight size={20} />
                         </Link>
                     </div>
                 </section>
             </main>
 
-            <div className="bg-white">
-                <Footer />
-            </div>
+            <Footer />
         </div>
     );
 }

@@ -28,7 +28,7 @@ export default function FeatureGrid() {
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900 font-display">
+                    <h2 className="text-[32px] md:text-[40px] font-sans font-bold text-gray-900">
                         Core Pillars
                     </h2>
                     <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
@@ -40,12 +40,12 @@ export default function FeatureGrid() {
                     {features.map((feature) => (
                         <div
                             key={feature.name}
-                            className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+                            className="bg-white p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 border border-gray-100 flex flex-col items-center text-center group"
                         >
                             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 text-primary group-hover:bg-primary/20 transition-colors">
                                 <feature.icon size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-3 font-display">
+                            <h3 className="text-xl font-bold text-gray-900 mb-3 font-sans">
                                 {feature.name}
                             </h3>
                             <p className="text-gray-600 leading-relaxed">

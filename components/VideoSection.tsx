@@ -5,7 +5,7 @@ export default function VideoSection() {
         <section className="py-20 bg-gray-900 text-white" id="videos">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold font-display text-white">
+                    <h2 className="text-3xl font-bold font-sans text-white">
                         Watch & Learn
                     </h2>
                     <p className="mt-4 text-gray-400">
@@ -14,7 +14,7 @@ export default function VideoSection() {
                 </div>
 
                 {/* Featured Video - Large */}
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-800 shadow-2xl mb-12 group cursor-pointer border border-gray-700">
+                <div className="relative aspect-video rounded-[3rem] overflow-hidden bg-gray-800 shadow-2xl mb-12 group cursor-pointer border-8 border-gray-800/50">
                     {/* Placeholder for video frame choice */}
                     <img
                         src="https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&q=80&w=1600"

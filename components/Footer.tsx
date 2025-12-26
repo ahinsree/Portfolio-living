@@ -10,7 +10,7 @@ export default function Footer() {
                 <div className="text-center md:text-left">
                     <Link
                         href="/"
-                        className="font-display font-bold text-xl tracking-tight text-gray-900 hover:text-gradient-brand transition-all duration-300 block mb-2"
+                        className="font-display font-black text-xl tracking-[0.1em] text-gray-900 hover:text-primary transition-all duration-300 block mb-2"
                     >
                         PORTFOLIO LIVING
                     </Link>

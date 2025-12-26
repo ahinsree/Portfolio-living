@@ -24,7 +24,7 @@ export default function RootLayout({
       <body
         className="antialiased font-sans text-gray-900 bg-white"
         style={{
-          // @ts-expect-error
+          // @ts-expect-error: Allow custom CSS variables in style object
           "--font-inter": "'Inter', sans-serif",
           "--font-space-grotesk": "'Space Grotesk', sans-serif",
           "--font-playfair": "'Playfair Display', serif"

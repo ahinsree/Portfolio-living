@@ -1,134 +1,160 @@
-import { TrendingUp, MessageCircle, Briefcase, User, Cpu, CheckCircle } from "lucide-react";
+import { TrendingUp, MessageCircle, Briefcase, User, Cpu, CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
 
 export default function ServicesPage() {
     const services = [
         {
             title: "Investment",
-            theme: "Growth",
+            theme: "Core Wealth",
             hook: "Stop saving. Start building real wealth.",
             value: "Data-driven strategies to grow your portfolio exponentially without the stress of day trading.",
-            icon: <TrendingUp className="w-8 h-8 text-primary" />,
+            icon: <TrendingUp className="w-8 h-8" />,
+            color: "text-primary",
+            bg: "bg-primary/5"
         },
         {
             title: "Communication",
-            theme: "Connection",
+            theme: "Social Capital",
             hook: "Speak so others actually listen.",
             value: "Psychology-backed techniques to command respect, negotiate better, and influence outcomes in any room.",
-            icon: <MessageCircle className="w-8 h-8 text-secondary" />,
+            icon: <MessageCircle className="w-8 h-8" />,
+            color: "text-primary",
+            bg: "bg-primary/5"
         },
         {
             title: "Career",
-            theme: "Strategy",
+            theme: "Market Value",
             hook: "Don't just climb the ladder. Own it.",
             value: "Strategic frameworks to navigate corporate politics, negotiate raises, and fast-track your promotions.",
-            icon: <Briefcase className="w-8 h-8 text-accent" />,
+            icon: <Briefcase className="w-8 h-8" />,
+            color: "text-primary",
+            bg: "bg-primary/5"
         },
         {
             title: "Personal Development",
-            theme: "Balance",
+            theme: "Human Potential",
             hook: "Optimize your most valuable asset: You.",
             value: "Actionable systems to boost productivity, mental clarity, and emotional resilience for peak performance.",
-            icon: <User className="w-8 h-8 text-primary" />,
+            icon: <User className="w-8 h-8" />,
+            color: "text-primary",
+            bg: "bg-primary/5"
         },
         {
             title: "Technology",
-            theme: "Innovation",
+            theme: "Output Leverage",
             hook: "Future-proof your skillset today.",
             value: "Stay ahead of the curve with essential tech insights that keep you relevant and in demand.",
-            icon: <Cpu className="w-8 h-8 text-secondary" />,
+            icon: <Cpu className="w-8 h-8" />,
+            color: "text-primary",
+            bg: "bg-primary/5"
         },
     ];
 
-    const whyUs = [
-        "Holistic Growth: We don&apos;t just fix your finances; we upgrade your entire operating system.",
-        "System-Based: No vague advice. Just proven, repeatable frameworks that actually work.",
-        "Modern Relevance: Strategies specifically tailored for the connected, digital age.",
-    ];
-
     return (
-        <>
+        <div className="min-h-screen bg-white font-sans selection:bg-primary selection:text-white">
             <Header />
-            <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+
+            <main className="pt-32 pb-20">
                 {/* Hero Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-                    <h1 className="text-5xl md:text-6xl font-display font-bold text-gray-900 mb-6 tracking-tight">
-                        Design Your Life. <br className="hidden md:block" />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
-                            Master Your Wealth.
-                        </span>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-20 relative">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-full bg-primary/5 blur-[120px] rounded-full -z-10" />
+                    <span className="text-primary text-xs font-black uppercase tracking-[0.4em] mb-8 block">Our Ecosystem</span>
+                    <h1 className="text-[54px] md:text-[60px] font-display font-bold text-gray-900 mb-4 leading-[1.1] tracking-tight">
+                        Design Your Life. <br />
+                        <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-bold">Master Your Wealth.</span>
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                        A comprehensive ecosystem for ambitious individuals who want more than just a job.
-                    </p>
+
+                    <div className="max-w-4xl mx-auto mt-4 pt-4 border-t border-gray-100">
+                        <p className="text-[20px] md:text-[22px] text-gray-400 font-light leading-relaxed tracking-tight">
+                            A <span className="text-gray-900 font-medium">comprehensive ecosystem</span> for ambitious individuals who want <span className="text-primary font-bold">more than just a job.</span>
+                        </p>
+                    </div>
                 </div>
 
                 {/* Services Grid */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {services.map((service, index) => (
                             <div
                                 key={index}
-                                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group"
+                                className="group relative bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden"
                             >
-                                <div className="mb-6 p-3 bg-gray-50 rounded-xl inline-block group-hover:bg-white group-hover:scale-110 transition-transform duration-300">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
+
+                                <div className={`mb-8 w-14 h-14 ${service.bg} rounded-xl flex items-center justify-center ${service.color} group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm shadow-primary/10`}>
                                     {service.icon}
                                 </div>
-                                <div className="text-xs font-semibold tracking-wider text-gray-500 uppercase mb-2">
+                                <div className="text-[10px] font-black tracking-widest text-gray-400 uppercase mb-3">
                                     {service.theme}
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
+                                <h3 className="text-[22px] font-sans font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
                                     {service.title}
                                 </h3>
-                                <p className="text-lg font-medium text-gray-800 mb-3 italic">
+                                <p className="text-base font-bold text-gray-900 mb-3 font-serif leading-tight">
                                     &quot;{service.hook}&quot;
                                 </p>
-                                <p className="text-gray-600 leading-relaxed">
+                                <p className="text-[16px] text-gray-600 font-normal leading-relaxed mb-8">
                                     {service.value}
                                 </p>
+                                <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-black text-gray-900 group-hover:text-primary transition-colors uppercase tracking-widest">
+                                    Get Started <ArrowRight size={16} />
+                                </Link>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Why Us Section */}
-                <div className="bg-white py-20 rounded-3xl mx-4 sm:mx-6 lg:mx-8 mb-20 shadow-sm border border-gray-100">
-                    <div className="max-w-4xl mx-auto px-4 text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12">Why Choose Portfolio Living?</h2>
-                        <div className="grid md:grid-cols-3 gap-8 text-left">
-                            {whyUs.map((item, index) => {
-                                const [title, desc] = item.split(": ");
-                                return (
-                                    <div key={index} className="flex flex-col items-center text-center">
-                                        <CheckCircle className="w-12 h-12 text-accent-tan mb-4" />
-                                        <h4 className="text-xl font-bold text-gray-900 mb-2">{title}</h4>
-                                        <p className="text-gray-600">{desc}</p>
-                                    </div>
-                                )
-                            })}
+                <div className="bg-gray-50 py-20 rounded-[4rem] mx-4 md:mx-12 mb-20 border border-gray-100 relative overflow-hidden">
+                    <div className="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full -translate-x-1/2 opacity-50 blur-3xl" />
+                    <div className="max-w-5xl mx-auto px-4">
+                        <div className="text-center mb-20">
+                            <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-3 block">Why Us</span>
+                            <h2 className="text-[32px] font-sans font-bold text-gray-900 tracking-tight">Why Choose Portfolio Living?</h2>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-16">
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-white shadow-xl rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+                                    <CheckCircle className="w-8 h-8 text-primary" />
+                                </div>
+                                <h4 className="text-[24px] font-sans font-bold text-gray-900 mb-4">Holistic Growth</h4>
+                                <p className="text-[16px] text-gray-600 font-normal leading-relaxed">We don&apos;t just fix your finances; we upgrade your entire operating system.</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-white shadow-xl rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+                                    <CheckCircle className="w-8 h-8 text-primary" />
+                                </div>
+                                <h4 className="text-[24px] font-sans font-bold text-gray-900 mb-4">System-Based</h4>
+                                <p className="text-[16px] text-gray-600 font-normal leading-relaxed">No vague advice. Just proven, repeatable frameworks that actually work.</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-white shadow-xl rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+                                    <CheckCircle className="w-8 h-8 text-primary" />
+                                </div>
+                                <h4 className="text-[24px] font-sans font-bold text-gray-900 mb-4">Modern Relevance</h4>
+                                <p className="text-[16px] text-gray-600 font-normal leading-relaxed">Strategies specifically tailored for the connected, digital age.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* CTA Section */}
-                <div className="text-center pb-12">
+                {/* Final CTA */}
+                <div className="text-center pb-20">
                     <Link
-                        href="#contact"
-                        className="inline-block bg-accent-tan text-white text-lg font-bold px-10 py-5 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                        href="/contact"
+                        className="inline-flex items-center gap-3 bg-primary text-white text-[18px] font-bold px-10 py-5 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-[0.98] mb-6"
                     >
                         Start My Transformation
                     </Link>
-                    <div className="mt-4 flex justify-center gap-4 text-sm text-gray-500 font-medium">
-                        <span>Upgrade My Life</span>
-                        <span>•</span>
-                        <span>Get The Blueprint</span>
-                    </div>
+                    <p className="text-[14px] font-medium text-gray-900">
+                        Upgrade My Life • Get The Blueprint
+                    </p>
                 </div>
-            </div>
+            </main>
+
             <Footer />
-        </>
+        </div>
     );
 }
