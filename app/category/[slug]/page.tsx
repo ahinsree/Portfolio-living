@@ -36,6 +36,7 @@ interface Category {
         slug: string;
         message: string;
     };
+    image: string;
 }
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -68,7 +69,8 @@ const CATEGORY_DATA: Record<string, Category> = {
             name: "Career",
             slug: "career",
             message: "If you are improving your Investment strategy, don't forget your Career. It's your primary funding source."
-        }
+        },
+        image: "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&q=80&w=1200"
     },
     communication: {
         name: "Communication",
@@ -91,7 +93,8 @@ const CATEGORY_DATA: Record<string, Category> = {
             name: "Personal Development",
             slug: "personal-development",
             message: "If you are mastering Communication, don't forget Personal Development. Inner clarity breeds outer confidence."
-        }
+        },
+        image: "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?auto=format&fit=crop&q=80&w=1200"
     },
     career: {
         name: "Career",
@@ -114,7 +117,8 @@ const CATEGORY_DATA: Record<string, Category> = {
             name: "Communication",
             slug: "communication",
             message: "If you are improving your Career, don't forget Communication. Your skills get you in the room, but your influence keeps you there."
-        }
+        },
+        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800"
     },
     "personal-development": {
         name: "Personal Development",
@@ -137,7 +141,8 @@ const CATEGORY_DATA: Record<string, Category> = {
             name: "Investment",
             slug: "investment",
             message: "If you are optimizing your Personal Development, don't forget Investment. Use your clarity to make better financial decisions."
-        }
+        },
+        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1200"
     },
     technology: {
         name: "Technology",
@@ -160,7 +165,8 @@ const CATEGORY_DATA: Record<string, Category> = {
             name: "Career",
             slug: "career",
             message: "If you are mastering Technology, don't forget your Career. Use these new skills to negotiate a higher salary."
-        }
+        },
+        image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
     }
 };
 
@@ -207,7 +213,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             name: wpCategory?.acfFields?.relatedCategorySlug || fallback?.related?.name || "",
             slug: wpCategory?.acfFields?.relatedCategorySlug || fallback?.related?.slug || "",
             message: wpCategory?.acfFields?.relatedMessage || fallback?.related?.message || ""
-        }
+        },
+        image: fallback?.image || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=1200"
     };
 
     const Icon = category.icon;
@@ -219,11 +226,21 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             <main className="pt-32 pb-24">
                 {/* 1. Hero Section */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-20 text-center">
-                    <div className={`w-20 h-20 ${category.bg} rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-primary/5 border border-primary/10`}>
-                        <Icon className={`w-10 h-10 ${category.color}`} />
+                    <div className="relative rounded-[3rem] overflow-hidden aspect-[21/9] mb-16 shadow-2xl border border-gray-100 group">
+                        <img
+                            src={category.image}
+                            alt={category.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s] ease-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                            <div className={`w-20 h-20 ${category.bg} rounded-[1.5rem] flex items-center justify-center mb-8 shadow-xl backdrop-blur-md border border-white/20`}>
+                                <Icon className={`w-10 h-10 ${category.color}`} />
+                            </div>
+                            <span className="text-white/90 text-xs font-black uppercase tracking-[0.4em] mb-4">The Hub Portfolio</span>
+                            <h1 className="text-[44px] md:text-[72px] font-display font-bold text-white leading-[1.1] tracking-tight" dangerouslySetInnerHTML={{ __html: category.headline }} />
+                        </div>
                     </div>
-                    <span className="text-primary text-xs font-black uppercase tracking-[0.4em] mb-8 block">The Hub Portfolio</span>
-                    <h1 className="text-[54px] md:text-[80px] font-display font-bold text-gray-900 leading-[1.1] tracking-tight mb-4" dangerouslySetInnerHTML={{ __html: category.headline }} />
 
                     <div className="max-w-4xl mx-auto mt-4 pt-4 border-t border-gray-100">
                         <p className="text-[20px] md:text-[22px] text-gray-400 font-light leading-relaxed tracking-tight">
@@ -263,7 +280,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                                     <Link href={article.link} key={idx} className="flex gap-8 group items-start">
                                         <div className="w-32 h-32 rounded-[1.5rem] overflow-hidden flex-shrink-0 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                                             <img
-                                                src={article.image || "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&q=80&w=400"}
+                                                src={article.image || category.image}
                                                 alt={article.title}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                             />
@@ -298,7 +315,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                                             </div>
                                         </div>
                                         <img
-                                            src={video.thumbnail || "https://images.unsplash.com/photo-1492619335414-99bc699badae?auto=format&fit=crop&q=80&w=800"}
+                                            src={video.thumbnail || category.image}
                                             alt={video.title}
                                             className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
                                         />

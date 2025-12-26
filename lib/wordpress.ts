@@ -87,12 +87,19 @@ function mapPost(post: any): WordPressPost {
     },
     author: post._embedded?.['author']?.[0] ? {
       node: {
-        name: post._embedded['author'][0].name,
+        name: post._embedded['author'][0].name || "Sarath V Raj",
         avatar: {
-          url: post._embedded['author'][0].avatar_urls?.['96']
+          url: post._embedded['author'][0].avatar_urls?.['96'] || "/images/authors/sarath.png"
         }
       }
-    } : undefined
+    } : {
+      node: {
+        name: "Sarath V Raj",
+        avatar: {
+          url: "/images/authors/sarath.png"
+        }
+      }
+    }
   };
 }
 

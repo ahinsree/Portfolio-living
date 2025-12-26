@@ -27,12 +27,24 @@ const FALLBACK_PLAYLISTS: Playlist[] = [
             {
                 title: "The 'Sleep Well' Portfolio Strategy",
                 duration: "12:34",
-                thumbnail: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800"
+                thumbnail: "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&q=80&w=800"
             },
             {
                 title: "First $100k: The Hardest Milestone",
                 duration: "08:45",
                 thumbnail: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=800"
+            }
+        ]
+    },
+    {
+        title: "The Optimized Individual",
+        category: "Personal Development",
+        description: "Systems to upgrade your mental and physical operating capacity.",
+        videos: [
+            {
+                title: "Energy Management vs Time Management",
+                duration: "14:30",
+                thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800"
             }
         ]
     },
@@ -44,7 +56,7 @@ const FALLBACK_PLAYLISTS: Playlist[] = [
             {
                 title: "Negotiate Like a Hostage Negotiator",
                 duration: "15:20",
-                thumbnail: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800"
+                thumbnail: "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?auto=format&fit=crop&q=80&w=800"
             }
         ]
     }

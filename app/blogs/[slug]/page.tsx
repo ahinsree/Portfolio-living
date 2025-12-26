@@ -73,8 +73,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-md">
                                     <Image
-                                        src={post.author?.node?.avatar?.url || "https://i.pravatar.cc/150?u=ahin"}
-                                        alt={post.author?.node?.name || "Ahin Sree"}
+                                        src={post.author?.node?.avatar?.url || ""}
+                                        alt={post.author?.node?.name || ""}
                                         width={48}
                                         height={48}
                                         className="w-full h-full object-cover"
@@ -82,7 +82,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300 mb-1">Written by</p>
-                                    <span className="font-bold text-gray-900 text-base">{post.author?.node?.name || "Ahin Sree"}</span>
+                                    <span className="font-bold text-gray-900 text-base">{post.author?.node?.name}</span>
                                 </div>
                             </div>
                             <div className="h-10 w-[1px] bg-gray-100 hidden md:block" />
@@ -138,15 +138,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             <div className="mt-24 p-12 bg-gray-50 rounded-[3rem] border border-gray-100 flex flex-col md:flex-row items-center gap-10">
                                 <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-white shadow-xl bg-white">
                                     <Image
-                                        src={post.author?.node?.avatar?.url || "https://i.pravatar.cc/150?u=ahin"}
-                                        alt={post.author?.node?.name || "Ahin Sree"}
+                                        src={post.author?.node?.avatar?.url || ""}
+                                        alt={post.author?.node?.name || ""}
                                         width={128}
                                         height={128}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <div className="text-center md:text-left">
-                                    <h3 className="text-2xl font-sans font-bold text-gray-900 mb-4">About {post.author?.node?.name || "Ahin Sree"}</h3>
+                                    <h3 className="text-2xl font-sans font-bold text-gray-900 mb-4">About {post.author?.node?.name}</h3>
                                     <p className="text-gray-500 leading-relaxed max-w-xl font-light">
                                         Building systems for wealth, career, and communications. Dedicated to helping professionals architect a life of freedom and influence.
                                     </p>

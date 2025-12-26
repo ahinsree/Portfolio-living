@@ -3,7 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ArrowRight, Clock, Calendar } from "lucide-react";
+import { ArrowRight, Clock, Calendar, User } from "lucide-react";
+
+const categoryImages: Record<string, string> = {
+    "investment": "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&q=80&w=800",
+    "communication": "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?auto=format&fit=crop&q=80&w=800",
+    "career": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
+    "personal development": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800",
+    "technology": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+    "all": "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=800"
+};
+
+const getPostImage = (post: WordPressPost) => {
+    if (post.featuredImage?.node?.sourceUrl) return post.featuredImage.node.sourceUrl;
+    const catName = post.categories?.nodes[0]?.name?.toLowerCase() || "all";
+    return categoryImages[catName] || categoryImages["all"];
+};
 
 export default async function BlogsPage() {
     const posts: WordPressPost[] = await getAllPosts();
@@ -24,7 +39,7 @@ export default async function BlogsPage() {
                         <Link href={`/blogs/${featuredPost.slug}`}>
                             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-[21/10] group cursor-pointer bg-gray-100">
                                 <Image
-                                    src={featuredPost.featuredImage?.node?.sourceUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=2000"}
+                                    src={getPostImage(featuredPost)}
                                     alt={featuredPost.title}
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-1000"
@@ -85,7 +100,7 @@ export default async function BlogsPage() {
                                         <article className="flex flex-col h-full">
                                             <div className="relative h-64 rounded-3xl overflow-hidden mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500 bg-gray-100">
                                                 <Image
-                                                    src={article.featuredImage?.node?.sourceUrl || "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&q=80&w=800"}
+                                                    src={getPostImage(article)}
                                                     alt={article.title}
                                                     fill
                                                     className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -97,7 +112,8 @@ export default async function BlogsPage() {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col flex-grow px-2">
-                                                <div className="flex items-center gap-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                                <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                                    <span className="flex items-center gap-1.5"><User size={12} className="text-primary" /> {article.author?.node?.name || "Sarath V Raj"}</span>
                                                     <span className="flex items-center gap-1.5"><Calendar size={12} className="text-primary" /> {new Date(article.date).toLocaleDateString()}</span>
                                                     <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> 5 min read</span>
                                                 </div>
