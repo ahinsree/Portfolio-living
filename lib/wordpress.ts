@@ -311,10 +311,6 @@ export async function getAllServices(): Promise<WordPressService[]> {
               ctaHeading
               ctaText
               ctaLink
-              serviceIcon {
-                sourceUrl
-                altText
-              }
             }
           }
         }
@@ -332,7 +328,7 @@ export async function getServiceBySlug(slug: string): Promise<WordPressService |
   try {
     const data = await fetchGraphQL(`
       query ServiceBySlug($slug: ID!) {
-        service(id: $slug, idType: URI) {
+        service(id: $slug, idType: SLUG) {
           title
           slug
           serviceFields {
@@ -344,10 +340,6 @@ export async function getServiceBySlug(slug: string): Promise<WordPressService |
             ctaHeading
             ctaText
             ctaLink
-            serviceIcon {
-              sourceUrl
-              altText
-            }
           }
         }
       }
