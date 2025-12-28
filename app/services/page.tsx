@@ -2,55 +2,20 @@ import { TrendingUp, MessageCircle, Briefcase, User, Cpu, CheckCircle, ArrowRigh
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getAllServices } from "@/lib/wordpress";
 
-export default function ServicesPage() {
-    const services = [
-        {
-            title: "Investment",
-            theme: "Core Wealth",
-            hook: "Stop saving. Start building real wealth.",
-            value: "Data-driven strategies to grow your portfolio exponentially without the stress of day trading.",
-            icon: <TrendingUp className="w-8 h-8" />,
-            color: "text-primary",
-            bg: "bg-primary/5"
-        },
-        {
-            title: "Communication",
-            theme: "Social Capital",
-            hook: "Speak so others actually listen.",
-            value: "Psychology-backed techniques to command respect, negotiate better, and influence outcomes in any room.",
-            icon: <MessageCircle className="w-8 h-8" />,
-            color: "text-primary",
-            bg: "bg-primary/5"
-        },
-        {
-            title: "Career",
-            theme: "Market Value",
-            hook: "Don't just climb the ladder. Own it.",
-            value: "Strategic frameworks to navigate corporate politics, negotiate raises, and fast-track your promotions.",
-            icon: <Briefcase className="w-8 h-8" />,
-            color: "text-primary",
-            bg: "bg-primary/5"
-        },
-        {
-            title: "Personal Development",
-            theme: "Human Potential",
-            hook: "Optimize your most valuable asset: You.",
-            value: "Actionable systems to boost productivity, mental clarity, and emotional resilience for peak performance.",
-            icon: <User className="w-8 h-8" />,
-            color: "text-primary",
-            bg: "bg-primary/5"
-        },
-        {
-            title: "Technology",
-            theme: "Output Leverage",
-            hook: "Future-proof your skillset today.",
-            value: "Stay ahead of the curve with essential tech insights that keep you relevant and in demand.",
-            icon: <Cpu className="w-8 h-8" />,
-            color: "text-primary",
-            bg: "bg-primary/5"
-        },
-    ];
+export default async function ServicesPage() {
+    const cmsServices = await getAllServices();
+
+    const getIcon = (title: string) => {
+        const lowerTitle = title.toLowerCase();
+        if (lowerTitle.includes("investment")) return <TrendingUp className="w-8 h-8" />;
+        if (lowerTitle.includes("communication")) return <MessageCircle className="w-8 h-8" />;
+        if (lowerTitle.includes("career")) return <Briefcase className="w-8 h-8" />;
+        if (lowerTitle.includes("personality") || lowerTitle.includes("personal")) return <User className="w-8 h-8" />;
+        if (lowerTitle.includes("technology")) return <Cpu className="w-8 h-8" />;
+        return <CheckCircle className="w-8 h-8" />;
+    };
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-primary selection:text-white">
@@ -76,32 +41,38 @@ export default function ServicesPage() {
                 {/* Services Grid */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {services.map((service, index) => (
-                            <div
+                        {cmsServices.map((service, index) => (
+                            <Link
+                                href={`/services/${service.slug}`}
                                 key={index}
-                                className="group relative bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden"
+                                className="group relative bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden block"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
 
-                                <div className={`mb-8 w-14 h-14 ${service.bg} rounded-xl flex items-center justify-center ${service.color} group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm shadow-primary/10`}>
-                                    {service.icon}
+                                <div className={`mb-8 w-14 h-14 bg-primary/5 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm shadow-primary/10`}>
+                                    {service.serviceFields.serviceIcon?.sourceUrl ? (
+                                        <img
+                                            src={service.serviceFields.serviceIcon.sourceUrl}
+                                            alt={service.serviceFields.serviceIcon.altText}
+                                            className="w-8 h-8 object-contain group-hover:invert transition-all"
+                                        />
+                                    ) : (
+                                        getIcon(service.title)
+                                    )}
                                 </div>
-                                <div className="text-[10px] font-black tracking-widest text-gray-400 uppercase mb-3">
-                                    {service.theme}
+                                <div className="text-[10px] font-black tracking-widest text-gray-400 uppercase mb-3 text-left">
+                                    {service.serviceFields.serviceKey || "Core Wealth"}
                                 </div>
-                                <h3 className="text-[22px] font-sans font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
+                                <h3 className="text-[22px] font-sans font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors text-left">
                                     {service.title}
                                 </h3>
-                                <p className="text-base font-bold text-gray-900 mb-3 font-serif leading-tight">
-                                    &quot;{service.hook}&quot;
-                                </p>
-                                <p className="text-[16px] text-gray-600 font-normal leading-relaxed mb-8">
-                                    {service.value}
-                                </p>
-                                <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-black text-gray-900 group-hover:text-primary transition-colors uppercase tracking-widest">
-                                    Get Started <ArrowRight size={16} />
-                                </Link>
-                            </div>
+                                <div className="text-[16px] text-gray-600 font-normal leading-relaxed mb-8 line-clamp-3 text-left">
+                                    {service.serviceFields.shortIntro}
+                                </div>
+                                <div className="inline-flex items-center gap-2 text-sm font-black text-gray-900 group-hover:text-primary transition-colors uppercase tracking-widest">
+                                    Explore Service <ArrowRight size={16} />
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -158,3 +129,4 @@ export default function ServicesPage() {
         </div>
     );
 }
+

@@ -275,3 +275,89 @@ export async function getHomePageData(): Promise<HomePageData | null> {
   }
 }
 
+export interface WordPressService {
+  title: string;
+  slug: string;
+  serviceFields: {
+    serviceKey: string;
+    heroTitle: string;
+    shortIntro: string;
+    sectionHeading: string;
+    detailedContent: string;
+    ctaHeading: string;
+    ctaText: string;
+    ctaLink: string;
+    serviceIcon?: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+export async function getAllServices(): Promise<WordPressService[]> {
+  try {
+    const data = await fetchGraphQL(`
+      query ServicesPage {
+        services(first: 20) {
+          nodes {
+            title
+            slug
+            serviceFields {
+              serviceKey
+              heroTitle
+              shortIntro
+              sectionHeading
+              detailedContent
+              ctaHeading
+              ctaText
+              ctaLink
+              serviceIcon {
+                sourceUrl
+                altText
+              }
+            }
+          }
+        }
+      }
+    `);
+
+    return data?.services?.nodes || [];
+  } catch (error) {
+    console.error('WordPress Fetch Error (getAllServices):', error);
+    return [];
+  }
+}
+
+export async function getServiceBySlug(slug: string): Promise<WordPressService | null> {
+  try {
+    const data = await fetchGraphQL(`
+      query ServiceBySlug($slug: ID!) {
+        service(id: $slug, idType: URI) {
+          title
+          slug
+          serviceFields {
+            serviceKey
+            heroTitle
+            shortIntro
+            sectionHeading
+            detailedContent
+            ctaHeading
+            ctaText
+            ctaLink
+            serviceIcon {
+              sourceUrl
+              altText
+            }
+          }
+        }
+      }
+    `, { slug });
+
+    return data?.service || null;
+  } catch (error) {
+    console.error('WordPress Fetch Error (getServiceBySlug):', error);
+    return null;
+  }
+}
+
+
