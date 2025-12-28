@@ -1,12 +1,12 @@
 import { PlayCircle } from "lucide-react";
 
-export default function VideoSection() {
+export default function VideoSection({ title }: { title?: string }) {
     return (
         <section className="py-20 bg-gray-900 text-white" id="videos">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold font-sans text-white">
-                        Watch & Learn
+                        {title || "Watch & Learn"}
                     </h2>
                     <p className="mt-4 text-gray-400">
                         Deep dives into complex topics, simplified.

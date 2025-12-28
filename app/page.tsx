@@ -6,10 +6,13 @@ import VideoSection from "@/components/VideoSection";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
-import { getAllPosts } from "@/lib/wordpress";
+import { getAllPosts, getHomePageData } from "@/lib/wordpress";
 
 export default async function Home() {
-  const posts = await getAllPosts().catch(() => []);
+  const [posts, homeData] = await Promise.all([
+    getAllPosts().catch(() => []),
+    getHomePageData().catch(() => null)
+  ]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -17,12 +20,17 @@ export default async function Home() {
       <main>
         <Hero />
         <FeatureGrid />
-        <BlogGrid posts={posts} />
-        <VideoSection />
+        <BlogGrid posts={posts} title={homeData?.latestInsightsTitle} />
+        <VideoSection title={homeData?.watchLearnTitle} />
         <Testimonials />
-        <Newsletter />
+        <Newsletter
+          heading={homeData?.subscribeHeading}
+          text={homeData?.subscribeText}
+          cta={homeData?.newsletterCta}
+        />
       </main>
       <Footer />
     </div>
   );
 }
+

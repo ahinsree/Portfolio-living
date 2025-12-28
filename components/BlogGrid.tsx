@@ -6,7 +6,7 @@ import { type WordPressPost } from "@/lib/wordpress";
 import { ArrowRight, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function BlogGrid({ posts }: { posts: WordPressPost[] }) {
+export default function BlogGrid({ posts, title }: { posts: WordPressPost[], title?: string }) {
     const [activeTab, setActiveTab] = useState("All");
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +62,7 @@ export default function BlogGrid({ posts }: { posts: WordPressPost[] }) {
                     <div className="text-center md:text-left">
                         <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Archive & Insights</span>
                         <h2 className="text-[32px] md:text-[48px] font-bold text-gray-900 font-sans mb-4 tracking-tight leading-tight">
-                            Latest Insights
+                            {title || "Latest Insights"}
                         </h2>
                         <p className="text-lg text-gray-500 font-light max-w-xl">Deep dives into the intersection of wealth, strategy, and personal growth.</p>
                     </div>

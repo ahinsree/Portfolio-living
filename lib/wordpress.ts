@@ -220,3 +220,58 @@ export async function getAllVideos(): Promise<WordPressVideo[]> {
     return [];
   }
 }
+
+export interface HomePageData {
+  subscribeHeading: string;
+  subscribeText: string;
+  latestInsightsTitle: string;
+  watchLearnTitle: string;
+  newsletterCta: string;
+}
+
+const GRAPHQL_URL = process.env.WORDPRESS_API_URL || 'https://cms.theportfolioliving.com/graphql';
+
+async function fetchGraphQL(query: string, variables = {}) {
+  const res = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    next: { revalidate: 3600 },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  });
+
+  const json = await res.json();
+  if (json.errors) {
+    console.error('GraphQL Errors:', json.errors);
+    throw new Error('Failed to fetch GraphQL API');
+  }
+  return json.data;
+}
+
+export async function getHomePageData(): Promise<HomePageData | null> {
+  try {
+    const data = await fetchGraphQL(`
+      query HomePage {
+        pageBy(uri: "home") {
+          homePageContent {
+            subscribeHeading
+            subscribeText
+            latestInsightsTitle
+            watchLearnTitle
+            newsletterCta
+          }
+        }
+      }
+    `);
+
+    return data?.pageBy?.homePageContent || null;
+  } catch (error) {
+    console.error('WordPress Fetch Error (getHomePageData):', error);
+    return null;
+  }
+}
+
