@@ -6,12 +6,12 @@ import VideoSection from "@/components/VideoSection";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
-import { getAllPosts, getHomePageData } from "@/lib/wordpress";
+import { getAllPosts, getHomePage } from "@/lib/wordpress";
 
 export default async function Home() {
   const [posts, homeData] = await Promise.all([
     getAllPosts().catch(() => []),
-    getHomePageData().catch(() => null)
+    getHomePage().catch(() => null)
   ]);
 
   return (
@@ -20,13 +20,25 @@ export default async function Home() {
       <main>
         <Hero />
         <FeatureGrid />
-        <BlogGrid posts={posts} title={homeData?.latestInsightsTitle} />
-        <VideoSection title={homeData?.watchLearnTitle} />
+
+        {/* Latest Insights */}
+        <BlogGrid
+          posts={posts}
+          title={homeData?.insightsHeading || homeData?.latestInsightsTitle}
+        />
+
+        {/* Watch & Learn */}
+        <VideoSection
+          title={homeData?.watchLearnHeading || homeData?.watchLearnTitle}
+        />
+
         <Testimonials />
+
+        {/* Newsletter Section - Using the new newsletter fields */}
         <Newsletter
-          heading={homeData?.subscribeHeading}
-          text={homeData?.subscribeText}
-          cta={homeData?.newsletterCta}
+          heading={homeData?.newsletterHeading || homeData?.subscribeHeading}
+          text={homeData?.newsletterText || homeData?.subscribeText}
+          cta={homeData?.newsletterButtonText || homeData?.newsletterCta}
         />
       </main>
       <Footer />

@@ -1,3 +1,6 @@
+import { gql } from "@apollo/client";
+import { client } from "./apolloClient";
+
 export interface WordPressPost {
   id: string;
   title: string;
@@ -224,9 +227,47 @@ export async function getAllVideos(): Promise<WordPressVideo[]> {
 export interface HomePageData {
   subscribeHeading: string;
   subscribeText: string;
-  latestInsightsTitle: string;
-  watchLearnTitle: string;
-  newsletterCta: string;
+  latestInsightsTitle?: string;
+  watchLearnTitle?: string;
+  newsletterCta?: string;
+  insightsHeading?: string;
+  insightsDescription?: string;
+  watchLearnHeading?: string;
+  newsletterHeading?: string;
+  newsletterText?: string;
+  newsletterButtonText?: string;
+}
+
+export async function getHomePage(): Promise<HomePageData | null> {
+  try {
+    const { data } = await client.query<{
+      pageBy: {
+        homeFields: HomePageData;
+      };
+    }>({
+      query: gql`
+        query HomePage {
+          pageBy(uri: "home") {
+            homeFields {
+              subscribeHeading
+              subscribeText
+              insightsHeading
+              insightsDescription
+              watchLearnHeading
+              newsletterHeading
+              newsletterText
+              newsletterButtonText
+            }
+          }
+        }
+      `,
+    });
+
+    return data?.pageBy?.homeFields || null;
+  } catch (error) {
+    console.error('Apollo Fetch Error (getHomePage):', error);
+    return null;
+  }
 }
 
 const GRAPHQL_URL = process.env.WORDPRESS_API_URL || 'https://cms.theportfolioliving.com/graphql';
