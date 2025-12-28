@@ -1,4 +1,4 @@
-import { TrendingUp, MessageCircle, Zap, Cpu } from "lucide-react";
+import { TrendingUp, MessageCircle, Briefcase, User, Cpu } from "lucide-react";
 
 const features = [
     {
@@ -12,13 +12,18 @@ const features = [
         icon: MessageCircle,
     },
     {
-        name: "Personal Development",
-        description: "Systems to improve yourself and achieve your goals.",
-        icon: Zap,
+        name: "Career",
+        description: "Navigate career growth and professional milestones.",
+        icon: Briefcase,
     },
     {
-        name: "Career & Tech",
-        description: "Navigate career growth and staying ahead in tech.",
+        name: "Personal Development",
+        description: "Systems to improve yourself and achieve your goals.",
+        icon: User,
+    },
+    {
+        name: "Technology",
+        description: "Staying ahead in the rapidly evolving digital landscape.",
         icon: Cpu,
     },
 ];
@@ -36,7 +41,7 @@ export default function FeatureGrid() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     {features.map((feature) => (
                         <div
                             key={feature.name}

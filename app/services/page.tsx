@@ -7,6 +7,20 @@ import { getAllServices } from "@/lib/wordpress";
 export default async function ServicesPage() {
     const cmsServices = await getAllServices();
 
+    // Custom order for services
+    const serviceOrder = ["investment", "communication", "career", "personal", "technology"];
+
+    const sortedServices = [...cmsServices].sort((a, b) => {
+        const indexA = serviceOrder.findIndex(order => a.title.toLowerCase().includes(order));
+        const indexB = serviceOrder.findIndex(order => b.title.toLowerCase().includes(order));
+
+        // If one is not found in the list, move it to the end
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+
+        return indexA - indexB;
+    });
+
     const getIcon = (title: string) => {
         const lowerTitle = title.toLowerCase();
         if (lowerTitle.includes("investment")) return <TrendingUp className="w-8 h-8" />;
@@ -41,7 +55,7 @@ export default async function ServicesPage() {
                 {/* Services Grid */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {cmsServices.map((service, index) => (
+                        {sortedServices.map((service, index) => (
                             <Link
                                 href={`/services/${service.slug}`}
                                 key={index}
