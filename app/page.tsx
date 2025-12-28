@@ -6,12 +6,13 @@ import VideoSection from "@/components/VideoSection";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
-import { getAllPosts, getHomePage } from "@/lib/wordpress";
+import { getAllPosts, getHomePage, getTestimonials } from "@/lib/wordpress";
 
 export default async function Home() {
-  const [posts, homeData] = await Promise.all([
+  const [posts, homeData, testimonials] = await Promise.all([
     getAllPosts().catch(() => []),
-    getHomePage().catch(() => null)
+    getHomePage().catch(() => null),
+    getTestimonials().catch(() => [])
   ]);
 
   return (
@@ -32,7 +33,7 @@ export default async function Home() {
           title={homeData?.watchLearnHeading || homeData?.watchLearnTitle}
         />
 
-        <Testimonials />
+        <Testimonials data={testimonials} />
 
         {/* Newsletter Section - Using the new newsletter fields */}
         <Newsletter

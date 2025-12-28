@@ -393,4 +393,53 @@ export async function getServiceBySlug(slug: string): Promise<WordPressService |
   }
 }
 
+export interface WordPressTestimonial {
+  testimonialFields: {
+    personName: string;
+    personRole: string;
+    testimonialText: string;
+    rating: number;
+    personImage?: {
+      node: {
+        sourceUrl: string;
+        altText: string;
+      };
+    };
+  };
+}
 
+export async function getTestimonials(): Promise<WordPressTestimonial[]> {
+  try {
+    const { data } = await client.query<{
+      testimonials: {
+        nodes: WordPressTestimonial[];
+      };
+    }>({
+      query: gql`
+        query Testimonials {
+          testimonials {
+            nodes {
+              testimonialFields {
+                personName
+                personRole
+                testimonialText
+                rating
+                personImage {
+                  node {
+                    sourceUrl
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+    });
+
+    return data?.testimonials?.nodes || [];
+  } catch (error) {
+    console.error('Apollo Fetch Error (getTestimonials):', error);
+    return [];
+  }
+}

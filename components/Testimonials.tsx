@@ -3,7 +3,9 @@
 import { Star, Quote } from "lucide-react";
 import { motion } from "framer-motion";
 
-const testimonials = [
+import { WordPressTestimonial } from "@/lib/wordpress";
+
+const defaultTestimonials = [
     {
         name: "Alex Reed",
         role: "Tech Entrepreneur",
@@ -27,7 +29,21 @@ const testimonials = [
     }
 ];
 
-export default function Testimonials() {
+interface TestimonialsProps {
+    data?: WordPressTestimonial[];
+}
+
+export default function Testimonials({ data }: TestimonialsProps) {
+    const displayTestimonials = data && data.length > 0
+        ? data.map(node => ({
+            name: node.testimonialFields.personName,
+            role: node.testimonialFields.personRole,
+            content: node.testimonialFields.testimonialText,
+            rating: node.testimonialFields.rating || 5,
+            image: node.testimonialFields.personImage?.node.sourceUrl || `https://i.pravatar.cc/150?u=${node.testimonialFields.personName}`
+        }))
+        : defaultTestimonials;
+
     return (
         <section className="py-24 bg-white relative overflow-hidden">
             {/* Decorative background elements */}
@@ -58,7 +74,7 @@ export default function Testimonials() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {testimonials.map((testimonial, index) => (
+                    {displayTestimonials.map((testimonial, index) => (
                         <motion.div
                             key={testimonial.name}
                             initial={{ opacity: 0, y: 30 }}
