@@ -81,35 +81,35 @@ export default function Testimonials({ data }: TestimonialsProps) {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 relative group"
+                            className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 relative group flex flex-col items-center text-center h-full"
                         >
                             <div className="absolute -top-4 right-8 bg-primary p-3 rounded-xl shadow-lg transform group-hover:scale-110 transition-transform duration-300">
                                 <Quote className="text-white" size={20} />
                             </div>
 
-                            <div className="flex gap-1 mb-6">
+                            <div className="flex justify-center gap-1 mb-6">
                                 {[...Array(testimonial.rating)].map((_, i) => (
                                     <Star key={i} size={16} className="fill-primary text-primary" />
                                 ))}
                             </div>
 
-                            <p className="text-gray-700 leading-relaxed mb-8">
+                            <p className="text-gray-700 leading-relaxed mb-8 italic">
                                 "{testimonial.content}"
                             </p>
 
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
+                            <div className="mt-auto pt-8 flex flex-col items-center gap-4">
+                                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-primary/20 shadow-inner">
                                     <img
                                         src={testimonial.image}
                                         alt={testimonial.name}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                                <div>
+                                <div className="space-y-0.5">
                                     <h4 className="font-bold text-gray-900 font-sans">
                                         {testimonial.name}
                                     </h4>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-gray-500 font-medium">
                                         {testimonial.role}
                                     </p>
                                 </div>
