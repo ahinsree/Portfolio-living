@@ -73,8 +73,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-md">
                                     <Image
-                                        src={post.author?.node?.avatar?.url || ""}
-                                        alt={post.author?.node?.name || ""}
+                                        src={post.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                        alt={post.author?.node?.name || "Author"}
                                         width={48}
                                         height={48}
                                         className="w-full h-full object-cover"
@@ -138,8 +138,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             <div className="mt-24 p-12 bg-gray-50 rounded-[3rem] border border-gray-100 flex flex-col md:flex-row items-center gap-10">
                                 <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-white shadow-xl bg-white">
                                     <Image
-                                        src={post.author?.node?.avatar?.url || ""}
-                                        alt={post.author?.node?.name || ""}
+                                        src={post.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                        alt={post.author?.node?.name || "Author"}
                                         width={128}
                                         height={128}
                                         className="w-full h-full object-cover"

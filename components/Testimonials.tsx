@@ -40,7 +40,7 @@ export default function Testimonials({ data }: TestimonialsProps) {
             role: node.testimonialFields.personRole,
             content: node.testimonialFields.testimonialText,
             rating: node.testimonialFields.rating || 5,
-            image: node.testimonialFields.personImage?.node.sourceUrl || `https://i.pravatar.cc/150?u=${node.testimonialFields.personName}`
+            image: node.testimonialFields?.personImage?.node?.sourceUrl || `https://i.pravatar.cc/150?u=${node.testimonialFields?.personName || 'user'}`
         }))
         : defaultTestimonials;
 

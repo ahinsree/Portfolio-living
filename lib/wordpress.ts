@@ -71,38 +71,40 @@ const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 
 const CATEGORY_AUTHOR_MAP: Record<string, { name: string; avatar: string }> = {
   "investment": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "communication": { name: "Jishnu G Anand", avatar: "/images/authors/jishnu.png" },
-  "career": { name: "Jishnu G Anand", avatar: "/images/authors/jishnu.png" },
+  "communication": { name: "Jishnu G Anand", avatar: "/images/authors/sarath.png" },
+  "career": { name: "Jishnu G Anand", avatar: "/images/authors/sarath.png" },
   "personal development": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "technology": { name: "Ahinsree B", avatar: "/images/authors/ahin.png" },
+  "technology": { name: "Ahinsree B", avatar: "/images/authors/sarath.png" },
 };
 
 function mapPost(post: any): WordPressPost {
   const categories = post._embedded?.['wp:term']?.[0]?.map((term: any) => ({
-    name: term.name,
-    slug: term.slug
+    name: term.name || "Article",
+    slug: term.slug || ""
   })) || [];
 
-  // Determine author based on category mapping
-  let mappedAuthor = {
-    name: "Sarath V Raj",
-    avatar: "/images/authors/sarath.png"
-  };
+  let name = "Sarath V Raj";
+  let avatar = "/images/authors/sarath.png";
 
-  if (categories.length > 0) {
-    const primaryCat = categories[0].name.toLowerCase();
-    if (CATEGORY_AUTHOR_MAP[primaryCat]) {
-      mappedAuthor = CATEGORY_AUTHOR_MAP[primaryCat];
+  try {
+    if (categories.length > 0) {
+      const catName = categories[0].name.toLowerCase();
+      if (CATEGORY_AUTHOR_MAP[catName]) {
+        name = CATEGORY_AUTHOR_MAP[catName].name;
+        avatar = CATEGORY_AUTHOR_MAP[catName].avatar;
+      }
     }
+  } catch (e) {
+    console.error("Author mapping error:", e);
   }
 
   return {
-    id: post.id.toString(),
-    title: post.title.rendered,
-    excerpt: post.excerpt.rendered,
-    content: post.content?.rendered,
-    slug: post.slug,
-    date: post.date,
+    id: post.id?.toString() || "post-id",
+    title: post.title?.rendered || "Untitled",
+    excerpt: post.excerpt?.rendered || "",
+    content: post.content?.rendered || "",
+    slug: post.slug || "",
+    date: post.date || new Date().toISOString(),
     featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
       node: {
         sourceUrl: post._embedded['wp:featuredmedia'][0].source_url
@@ -113,9 +115,9 @@ function mapPost(post: any): WordPressPost {
     },
     author: {
       node: {
-        name: mappedAuthor.name,
+        name,
         avatar: {
-          url: mappedAuthor.avatar
+          url: avatar
         }
       }
     }
@@ -465,17 +467,20 @@ export async function getTestimonials(): Promise<WordPressTestimonial[]> {
  * Standard speed: 200 words per minute.
  */
 export function estimateReadTime(content: string | undefined): string {
-  if (!content) return "1 min read";
+  if (!content || typeof content !== 'string') return "1 min read";
+  try {
+    // Remove HTML tags
+    const text = content.replace(/<[^>]*>?/gm, '');
 
-  // Remove HTML tags
-  const text = content.replace(/<[^>]*>?/gm, '');
+    // Count words
+    const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
 
-  // Count words
-  const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+    // Calculate minutes (minimum 1)
+    const minutes = Math.max(1, Math.ceil(wordCount / 200));
 
-  // Calculate minutes (minimum 1)
-  const minutes = Math.max(1, Math.ceil(wordCount / 200));
-
-  return `${minutes} min read`;
+    return `${minutes} min read`;
+  } catch (e) {
+    return "1 min read";
+  }
 }
 
