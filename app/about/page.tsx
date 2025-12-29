@@ -64,19 +64,19 @@ export default function About() {
                             </div>
 
                             {/* Abstract Visual Representation */}
-                            <div className="relative h-auto lg:h-[650px] w-full bg-white rounded-[3.5rem] shadow-2xl p-8 lg:p-12 overflow-hidden border border-gray-100 flex flex-col justify-center">
-                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.03),transparent)] z-0" />
+                            <div className="relative h-auto lg:min-h-[750px] w-full bg-white rounded-[3.5rem] shadow-2xl p-10 lg:p-16 border border-gray-100 flex flex-col">
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.03),transparent)] z-0 rounded-[3.5rem] overflow-hidden" />
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 rounded-full blur-[120px]" />
 
-                                <div className="relative z-10">
-                                    <div className="text-center mb-12">
+                                <div className="relative z-10 w-full pt-4">
+                                    <div className="text-center mb-16">
                                         <div className="inline-block px-4 py-1.5 bg-primary/5 rounded-full text-primary font-black text-[10px] tracking-[0.2em] uppercase mb-4">
                                             Interactive Portfolio
                                         </div>
-                                        <h3 className="text-2xl font-bold text-gray-900 tracking-tight">The Asset Matrix<sup>&trade;</sup></h3>
+                                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">The Asset Matrix<sup>&trade;</sup></h3>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10 max-w-2xl mx-auto">
                                         {[
                                             {
                                                 title: "Wealth Intelligence",
