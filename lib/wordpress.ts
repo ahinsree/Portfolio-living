@@ -69,7 +69,33 @@ export interface WordPressVideo {
 
 const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 
+const CATEGORY_AUTHOR_MAP: Record<string, { name: string; avatar: string }> = {
+  "investment": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
+  "communication": { name: "Jishnu G Anand", avatar: "/images/authors/jishnu.png" },
+  "career": { name: "Jishnu G Anand", avatar: "/images/authors/jishnu.png" },
+  "personal development": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
+  "technology": { name: "Ahinsree B", avatar: "/images/authors/ahin.png" },
+};
+
 function mapPost(post: any): WordPressPost {
+  const categories = post._embedded?.['wp:term']?.[0]?.map((term: any) => ({
+    name: term.name,
+    slug: term.slug
+  })) || [];
+
+  // Determine author based on category mapping
+  let mappedAuthor = {
+    name: "Sarath V Raj",
+    avatar: "/images/authors/sarath.png"
+  };
+
+  if (categories.length > 0) {
+    const primaryCat = categories[0].name.toLowerCase();
+    if (CATEGORY_AUTHOR_MAP[primaryCat]) {
+      mappedAuthor = CATEGORY_AUTHOR_MAP[primaryCat];
+    }
+  }
+
   return {
     id: post.id.toString(),
     title: post.title.rendered,
@@ -83,23 +109,13 @@ function mapPost(post: any): WordPressPost {
       }
     } : undefined,
     categories: {
-      nodes: post._embedded?.['wp:term']?.[0]?.map((term: any) => ({
-        name: term.name,
-        slug: term.slug
-      })) || []
+      nodes: categories
     },
-    author: post._embedded?.['author']?.[0] ? {
+    author: {
       node: {
-        name: post._embedded['author'][0].name || "Sarath V Raj",
+        name: mappedAuthor.name,
         avatar: {
-          url: post._embedded['author'][0].avatar_urls?.['96'] || "/images/authors/sarath.png"
-        }
-      }
-    } : {
-      node: {
-        name: "Sarath V Raj",
-        avatar: {
-          url: "/images/authors/sarath.png"
+          url: mappedAuthor.avatar
         }
       }
     }
