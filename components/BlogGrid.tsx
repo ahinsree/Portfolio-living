@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useMemo, useRef } from "react";
-import { type WordPressPost } from "@/lib/wordpress";
+import { type WordPressPost, estimateReadTime } from "@/lib/wordpress";
 import { ArrowRight, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -126,7 +126,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                                 {featuredPost.author?.node?.name || "Sarath V Raj"}
                                             </span>
                                             <span className="w-1.5 h-1.5 rounded-full bg-primary/30" />
-                                            <span>5 min read</span>
+                                            <span>{estimateReadTime(featuredPost.content || featuredPost.excerpt)}</span>
                                         </div>
                                         <Link href={`/blogs/${featuredPost.slug}`} className="block group">
                                             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight group-hover:text-primary transition-colors tracking-tight" dangerouslySetInnerHTML={{ __html: featuredPost.title }} />
@@ -195,7 +195,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                                             <div className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
                                                                 {post.author?.node?.name || "Sarath V Raj"}
                                                                 <span className="w-1 h-1 rounded-full bg-gray-200" />
-                                                                5 min read
+                                                                {estimateReadTime(post.content || post.excerpt)}
                                                             </div>
                                                         </div>
                                                     </article>

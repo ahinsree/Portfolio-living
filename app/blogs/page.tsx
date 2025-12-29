@@ -1,4 +1,4 @@
-import { getAllPosts, getAllCategories, type WordPressPost, type WordPressCategory } from "@/lib/wordpress";
+import { getAllPosts, getAllCategories, type WordPressPost, type WordPressCategory, estimateReadTime } from "@/lib/wordpress";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -52,7 +52,7 @@ export default async function BlogsPage() {
                                             Featured insight
                                         </span>
                                         <span className="text-white/80 text-sm flex items-center gap-2 font-medium">
-                                            <Clock size={16} className="text-primary" /> 10 min read
+                                            <Clock size={16} className="text-primary" /> {estimateReadTime(featuredPost.content || featuredPost.excerpt)}
                                         </span>
                                     </div>
                                     <h1 className="text-3xl md:text-5xl font-display font-bold leading-tight mb-6 drop-shadow-lg" dangerouslySetInnerHTML={{ __html: featuredPost.title }} />
@@ -115,7 +115,7 @@ export default async function BlogsPage() {
                                                 <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">
                                                     <span className="flex items-center gap-1.5"><User size={12} className="text-primary" /> {article.author?.node?.name || "Sarath V Raj"}</span>
                                                     <span className="flex items-center gap-1.5"><Calendar size={12} className="text-primary" /> {new Date(article.date).toLocaleDateString()}</span>
-                                                    <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> 5 min read</span>
+                                                    <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> {estimateReadTime(article.content || article.excerpt)}</span>
                                                 </div>
                                                 <h2 className="text-[22px] font-sans font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight" dangerouslySetInnerHTML={{ __html: article.title }} />
                                                 <div className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6 font-light" dangerouslySetInnerHTML={{ __html: article.excerpt }} />

@@ -1,4 +1,4 @@
-import { getPostBySlug, getAllPosts, type WordPressPost } from "@/lib/wordpress";
+import { getPostBySlug, getAllPosts, type WordPressPost, estimateReadTime } from "@/lib/wordpress";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -98,7 +98,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 <Clock size={20} className="text-primary" />
                                 <div className="text-sm">
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300 mb-1">Reading time</p>
-                                    <span className="font-bold text-gray-600 uppercase tracking-wider">8 min read</span>
+                                    <span className="font-bold text-gray-600 uppercase tracking-wider">{estimateReadTime(post.content || post.excerpt)}</span>
                                 </div>
                             </div>
                         </div>

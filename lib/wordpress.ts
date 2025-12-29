@@ -443,3 +443,23 @@ export async function getTestimonials(): Promise<WordPressTestimonial[]> {
     return [];
   }
 }
+
+/**
+ * Estimates the reading time of a piece of content.
+ * Standard speed: 200 words per minute.
+ */
+export function estimateReadTime(content: string | undefined): string {
+  if (!content) return "1 min read";
+
+  // Remove HTML tags
+  const text = content.replace(/<[^>]*>?/gm, '');
+
+  // Count words
+  const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+
+  // Calculate minutes (minimum 1)
+  const minutes = Math.max(1, Math.ceil(wordCount / 200));
+
+  return `${minutes} min read`;
+}
+
