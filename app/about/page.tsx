@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Layers, ShieldCheck, Zap, TrendingUp, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function About() {
     return (
@@ -63,33 +64,103 @@ export default function About() {
                             </div>
 
                             {/* Abstract Visual Representation */}
-                            <div className="relative h-[600px] w-full bg-white rounded-[3rem] shadow-2xl p-12 overflow-hidden border border-gray-100">
-                                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white z-0" />
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 rounded-full blur-[100px]" />
-                                <div className="relative z-10 flex flex-col justify-center h-full">
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-gray-100 transform translate-y-10 hover:-translate-y-2 transition-transform duration-500 cursor-pointer group">
-                                            <Zap className="w-10 h-10 text-primary mb-6 group-hover:scale-110 transition-transform" />
-                                            <div className="h-2 w-24 bg-gray-100 rounded-full mb-3" />
-                                            <div className="h-2 w-16 bg-gray-100 rounded-full" />
+                            <div className="relative h-auto lg:h-[650px] w-full bg-white rounded-[3.5rem] shadow-2xl p-8 lg:p-12 overflow-hidden border border-gray-100 flex flex-col justify-center">
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.03),transparent)] z-0" />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 rounded-full blur-[120px]" />
+
+                                <div className="relative z-10">
+                                    <div className="text-center mb-12">
+                                        <div className="inline-block px-4 py-1.5 bg-primary/5 rounded-full text-primary font-black text-[10px] tracking-[0.2em] uppercase mb-4">
+                                            Interactive Portfolio
                                         </div>
-                                        <div className="bg-primary p-8 rounded-[2rem] shadow-2xl shadow-primary/30 transform -translate-y-6 hover:-translate-y-10 transition-transform duration-500 cursor-pointer group">
-                                            <ShieldCheck className="w-10 h-10 text-white mb-6 group-hover:scale-110 transition-transform" />
-                                            <div className="h-2 w-24 bg-white/20 rounded-full mb-3" />
-                                            <div className="h-2 w-16 bg-white/20 rounded-full" />
-                                        </div>
-                                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-gray-100 transform translate-y-4 hover:-translate-y-6 transition-transform duration-500 cursor-pointer group">
-                                            <Layers className="w-10 h-10 text-primary mb-6 group-hover:scale-110 transition-transform" />
-                                            <div className="h-2 w-24 bg-gray-100 rounded-full mb-3" />
-                                            <div className="h-2 w-16 bg-gray-100 rounded-full" />
-                                        </div>
-                                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-gray-100 transform -translate-y-12 hover:-translate-y-16 transition-transform duration-500 cursor-pointer group">
-                                            <TrendingUp className="w-10 h-10 text-primary mb-6 group-hover:scale-110 transition-transform" />
-                                            <div className="h-2 w-24 bg-gray-100 rounded-full mb-3" />
-                                            <div className="h-2 w-16 bg-gray-100 rounded-full" />
-                                        </div>
+                                        <h3 className="text-2xl font-bold text-gray-900 tracking-tight">The Asset Matrix<sup>&trade;</sup></h3>
                                     </div>
-                                    <div className="text-center mt-16 font-serif font-black text-gray-200 uppercase tracking-[0.4em] text-xs">The Asset Matrix</div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                                        {[
+                                            {
+                                                title: "Wealth Intelligence",
+                                                desc: "Asset Allocation",
+                                                icon: TrendingUp,
+                                                stat: "+12.4%",
+                                                color: "bg-primary",
+                                                delay: 0,
+                                                shift: "translate-y-4"
+                                            },
+                                            {
+                                                title: "Elite Networking",
+                                                desc: "Social Capital",
+                                                icon: Users,
+                                                stat: "Global",
+                                                color: "bg-gray-900",
+                                                delay: 0.1,
+                                                shift: "-translate-y-4"
+                                            },
+                                            {
+                                                title: "Personal Brand",
+                                                desc: "Digital Equity",
+                                                icon: ShieldCheck,
+                                                stat: "Trusted",
+                                                color: "bg-gray-900",
+                                                delay: 0.2,
+                                                shift: "translate-y-8"
+                                            },
+                                            {
+                                                title: "Tech Infrastructure",
+                                                desc: "AI & Automation",
+                                                icon: Zap,
+                                                stat: "Advanced",
+                                                color: "bg-primary",
+                                                delay: 0.3,
+                                                shift: "translate-y-0"
+                                            }
+                                        ].map((item, idx) => (
+                                            <motion.div
+                                                key={item.title}
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                whileInView={{ opacity: 1, scale: 1 }}
+                                                viewport={{ once: true }}
+                                                transition={{ delay: item.delay, duration: 0.5 }}
+                                                whileHover={{ y: -10, scale: 1.02 }}
+                                                className={`bg-white p-6 lg:p-8 rounded-[2.5rem] shadow-xl border border-gray-100 transition-all duration-500 cursor-pointer group relative ${item.shift} hidden sm:block`}
+                                            >
+                                                <div className={`w-12 h-12 ${item.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:rotate-12 transition-transform`}>
+                                                    <item.icon className="w-6 h-6 text-white" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <h4 className="font-bold text-gray-900 text-lg tracking-tight">{item.title}</h4>
+                                                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">{item.desc}</p>
+                                                </div>
+                                                <div className="mt-6 flex items-center justify-between">
+                                                    <div className="h-1 flex-1 bg-gray-50 rounded-full overflow-hidden mr-4">
+                                                        <motion.div
+                                                            initial={{ width: 0 }}
+                                                            whileInView={{ width: "70%" }}
+                                                            transition={{ delay: item.delay + 0.5, duration: 1 }}
+                                                            className={`h-full ${item.color}`}
+                                                        />
+                                                    </div>
+                                                    <span className="text-[10px] font-black text-gray-400">{item.stat}</span>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+
+                                        {/* Mobile View simplified items */}
+                                        {[
+                                            { title: "Wealth Intelligence", icon: TrendingUp, color: "bg-primary" },
+                                            { title: "Elite Networking", icon: Users, color: "bg-gray-900" },
+                                            { title: "Personal Brand", icon: ShieldCheck, color: "bg-gray-900" },
+                                            { title: "Tech Infrastructure", icon: Zap, color: "bg-primary" }
+                                        ].map((item) => (
+                                            <div key={item.title + "-mobile"} className="sm:hidden flex items-center gap-4 bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                                                <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                    <item.icon className="w-5 h-5 text-white" />
+                                                </div>
+                                                <span className="font-bold text-gray-900">{item.title}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="text-center mt-12 font-black text-gray-300 uppercase tracking-[0.5em] text-[10px] sm:mt-24">Evolutionary Architecture</div>
                                 </div>
                             </div>
                         </div>
