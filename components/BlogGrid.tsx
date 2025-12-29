@@ -100,7 +100,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                             transition={{ duration: 0.5 }}
                         >
                             {/* Featured Insight Section */}
-                            <div className="mb-20">
+                            <div className="lg:col-span-12 mb-20">
                                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                                     <div className="lg:col-span-7">
                                         <Link href={`/blogs/${featuredPost.slug}`} className="group relative block aspect-[16/9] overflow-hidden rounded-[3rem] shadow-2xl">
@@ -118,15 +118,24 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                         </Link>
                                     </div>
                                     <div className="lg:col-span-5 space-y-8">
-                                        <div className="flex items-center gap-6 text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                                            <span className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                                    <User size={14} className="text-primary" />
+                                        <div className="flex items-center gap-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md bg-gray-100 flex-shrink-0">
+                                                    <img
+                                                        src={featuredPost.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                                        alt={featuredPost.author?.node?.name || "Author"}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 </div>
-                                                {featuredPost.author?.node?.name || "Sarath V Raj"}
-                                            </span>
-                                            <span className="w-1.5 h-1.5 rounded-full bg-primary/30" />
-                                            <span>{estimateReadTime(featuredPost.content || featuredPost.excerpt)}</span>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] leading-none mb-1.5">Written by</span>
+                                                    <span className="text-base font-bold text-gray-900 leading-none">{featuredPost.author?.node?.name || "Sarath V Raj"}</span>
+                                                </div>
+                                            </div>
+                                            <div className="h-8 w-px bg-gray-100" />
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                                                {estimateReadTime(featuredPost.content || featuredPost.excerpt)}
+                                            </div>
                                         </div>
                                         <Link href={`/blogs/${featuredPost.slug}`} className="block group">
                                             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight group-hover:text-primary transition-colors tracking-tight" dangerouslySetInnerHTML={{ __html: featuredPost.title }} />
@@ -191,11 +200,24 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                                             </div>
                                                         </div>
                                                         <div className="px-2">
-                                                            <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover/card:text-primary transition-colors line-clamp-2 leading-snug tracking-tight" dangerouslySetInnerHTML={{ __html: post.title }} />
-                                                            <div className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                                                                {post.author?.node?.name || "Sarath V Raj"}
-                                                                <span className="w-1 h-1 rounded-full bg-gray-200" />
-                                                                {estimateReadTime(post.content || post.excerpt)}
+                                                            <h3 className="text-xl font-bold text-gray-900 mb-6 group-hover/card:text-primary transition-colors line-clamp-2 leading-snug tracking-tight" dangerouslySetInnerHTML={{ __html: post.title }} />
+                                                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex-shrink-0">
+                                                                        <img
+                                                                            src={post.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                                                            alt={post.author?.node?.name || "Author"}
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] leading-none mb-1">Written by</span>
+                                                                        <span className="text-[12px] font-bold text-gray-900 leading-none">{post.author?.node?.name || "Sarath V Raj"}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">
+                                                                    {estimateReadTime(post.content || post.excerpt)}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </article>

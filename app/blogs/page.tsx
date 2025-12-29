@@ -47,10 +47,20 @@ export default async function BlogsPage() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                                 <div className="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-3/4 text-white">
-                                    <div className="flex items-center gap-4 mb-6">
+                                    <div className="flex flex-wrap items-center gap-6 mb-8">
                                         <span className="bg-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-lg">
                                             Featured insight
                                         </span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+                                                <img
+                                                    src={featuredPost.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                                    alt={featuredPost.author?.node?.name || "Author"}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <span className="text-white font-bold text-sm tracking-tight">{featuredPost.author?.node?.name || "Sarath V Raj"}</span>
+                                        </div>
                                         <span className="text-white/80 text-sm flex items-center gap-2 font-medium">
                                             <Clock size={16} className="text-primary" /> {estimateReadTime(featuredPost.content || featuredPost.excerpt)}
                                         </span>
@@ -112,10 +122,23 @@ export default async function BlogsPage() {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col flex-grow px-2">
-                                                <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">
-                                                    <span className="flex items-center gap-1.5"><User size={12} className="text-primary" /> {article.author?.node?.name || "Sarath V Raj"}</span>
-                                                    <span className="flex items-center gap-1.5"><Calendar size={12} className="text-primary" /> {new Date(article.date).toLocaleDateString()}</span>
-                                                    <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> {estimateReadTime(article.content || article.excerpt)}</span>
+                                                <div className="flex items-center justify-between mb-6 pt-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-100 flex-shrink-0">
+                                                            <img
+                                                                src={article.author?.node?.avatar?.url || "/images/authors/sarath.png"}
+                                                                alt={article.author?.node?.name || "Author"}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] leading-none mb-0.5">Written by</span>
+                                                            <span className="text-[11px] font-bold text-gray-900 leading-none">{article.author?.node?.name || "Sarath V Raj"}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                        <Calendar size={12} className="text-primary/60" /> {new Date(article.date).toLocaleDateString()}
+                                                    </div>
                                                 </div>
                                                 <h2 className="text-[22px] font-sans font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight" dangerouslySetInnerHTML={{ __html: article.title }} />
                                                 <div className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6 font-light" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
