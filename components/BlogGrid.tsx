@@ -90,6 +90,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                     ))}
                 </div>
 
+
                 <AnimatePresence mode="wait">
                     {featuredPost ? (
                         <motion.div
@@ -247,6 +248,6 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                     </Link>
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

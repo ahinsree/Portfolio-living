@@ -69,69 +69,65 @@ export interface WordPressVideo {
 
 const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 
-const CATEGORY_AUTHOR_MAP: Record<string, { name: string; avatar: string }> = {
-  "investment": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "communication": { name: "Jishnu G Anand", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" },
-  "career": { name: "Jishnu G Anand", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" },
-  "personal development": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "technology": { name: "Ahinsree B", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400" },
-};
-
-function mapPost(post: any): WordPressPost {
-  const categories = post._embedded?.['wp:term']?.[0]?.map((term: any) => ({
-    name: term.name || "Article",
-    slug: term.slug || ""
-  })) || [];
-
-  let name = "Sarath V Raj";
-  let avatar = "/images/authors/sarath.png";
-
-  try {
-    if (categories.length > 0) {
-      const catName = categories[0].name.toLowerCase();
-      if (CATEGORY_AUTHOR_MAP[catName]) {
-        name = CATEGORY_AUTHOR_MAP[catName].name;
-        avatar = CATEGORY_AUTHOR_MAP[catName].avatar;
+const POST_FIELDS_FRAGMENT = `
+  id
+  title
+  excerpt
+  content
+  slug
+  date
+  featuredImage {
+    node {
+      sourceUrl
+    }
+  }
+  categories {
+    nodes {
+      name
+      slug
+    }
+  }
+  author {
+    node {
+      name
+      avatar {
+        url
       }
     }
-  } catch (e) {
-    console.error("Author mapping error:", e);
   }
+`;
 
+function formatWPPost(post: any): WordPressPost {
   return {
-    id: post.id?.toString() || post.slug || `generated-id-${post.title?.rendered?.slice(0, 10)}`,
-    title: post.title?.rendered || "Untitled",
-    excerpt: post.excerpt?.rendered || "",
-    content: post.content?.rendered || "",
-    slug: post.slug || "",
-    date: post.date || "2024-01-01T00:00:00",
-    featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
-      node: {
-        sourceUrl: post._embedded['wp:featuredmedia'][0].source_url
-      }
-    } : undefined,
-    categories: {
-      nodes: categories
-    },
+    ...post,
+    // Ensure nested objects exist to prevent UI crashes
+    featuredImage: post.featuredImage || undefined,
     author: {
       node: {
-        name,
+        name: post.author?.node?.name || "Sarath V Raj",
         avatar: {
-          url: avatar || "/images/authors/sarath.png"
+          url: post.author?.node?.avatar?.url || "/images/authors/sarath.png"
         }
       }
+    },
+    categories: {
+      nodes: post.categories?.nodes || []
     }
   };
 }
 
 export async function getAllPosts(): Promise<WordPressPost[]> {
   try {
-    const res = await fetch(`${BASE_URL}/posts?_embed&per_page=20`, {
-      next: { revalidate: 3600 } // Cache for 1 hour
-    });
-    if (!res.ok) throw new Error('Failed to fetch posts');
-    const posts = await res.json();
-    return posts.map(mapPost);
+    const data = await fetchGraphQL(`
+      query AllPosts {
+        posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
+          nodes {
+            ${POST_FIELDS_FRAGMENT}
+          }
+        }
+      }
+    `);
+    return (data?.posts?.nodes || []).map(formatWPPost);
   } catch (error) {
     console.error('WordPress Fetch Error (getAllPosts):', error);
     return [];
@@ -140,13 +136,16 @@ export async function getAllPosts(): Promise<WordPressPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
   try {
-    const res = await fetch(`${BASE_URL}/posts?slug=${slug}&_embed`, {
-      next: { revalidate: 3600 }
-    });
-    if (!res.ok) throw new Error('Failed to fetch post');
-    const posts = await res.json();
-    if (posts.length === 0) return null;
-    return mapPost(posts[0]);
+    const data = await fetchGraphQL(`
+      query PostBySlug($id: ID!) {
+        post(id: $id, idType: SLUG) {
+          ${POST_FIELDS_FRAGMENT}
+        }
+      }
+    `, { id: slug });
+
+    if (!data?.post) return null;
+    return formatWPPost(data.post);
   } catch (error) {
     console.error('WordPress Fetch Error (getPostBySlug):', error);
     return null;
@@ -199,15 +198,17 @@ export async function getCategoryBySlug(slug: string): Promise<WordPressCategory
 
 export async function getPostsByCategory(categorySlug: string): Promise<WordPressPost[]> {
   try {
-    const category = await getCategoryBySlug(categorySlug);
-    if (!category) return [];
+    const data = await fetchGraphQL(`
+      query PostsByCategory($categoryName: String!) {
+        posts(first: 20, where: { categoryName: $categoryName, orderby: { field: DATE, order: DESC } }) {
+          nodes {
+            ${POST_FIELDS_FRAGMENT}
+          }
+        }
+      }
+    `, { categoryName: categorySlug });
 
-    const res = await fetch(`${BASE_URL}/posts?categories=${category.id}&_embed&per_page=20`, {
-      next: { revalidate: 3600 }
-    });
-    if (!res.ok) throw new Error('Failed to fetch posts by category');
-    const posts = await res.json();
-    return Array.isArray(posts) ? posts.map(mapPost) : [];
+    return (data?.posts?.nodes || []).map(formatWPPost);
   } catch (error) {
     console.error('WordPress Fetch Error (getPostsByCategory):', error);
     return [];

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ArrowRight, Clock, Calendar, User } from "lucide-react";
+import { ArrowRight, Clock, Calendar, User, Cpu } from "lucide-react";
 
 const categoryImages: Record<string, string> = {
     "investment": "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&q=80&w=800",
@@ -27,6 +27,11 @@ export default async function BlogsPage() {
     // Featured post is the most recent one
     const featuredPost = posts?.[0];
     const otherPosts = posts?.slice(1);
+
+    // Get the latest Technology post for the sidebar widget
+    const techPost = posts?.find(p =>
+        p.categories?.nodes.some(cat => cat.slug === 'technology' || cat.name === 'Technology')
+    );
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-primary selection:text-white">
@@ -181,6 +186,34 @@ export default async function BlogsPage() {
                                     <p className="text-[10px] text-gray-400 mt-6 text-center font-medium uppercase tracking-widest">
                                         No spam • Opt-out anytime
                                     </p>
+                                </div>
+
+                                {/* Technology Insider Widget */}
+                                <div className="group relative bg-gray-900 rounded-[2.5rem] p-10 overflow-hidden shadow-2xl border border-white/5 active:scale-[0.99] transition-transform duration-300">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full -mr-20 -mt-20 blur-[80px] group-hover:bg-primary/30 transition-all" />
+                                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full -ml-16 -mb-16 blur-[60px]" />
+
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 group-hover:scale-110 transition-transform">
+                                                <Cpu className="w-6 h-6 text-primary" />
+                                            </div>
+                                            <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Future Tech</span>
+                                        </div>
+                                        <h3 className="text-white text-2xl font-bold font-sans mb-4 leading-tight">
+                                            The <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AI & Automation</span> Masterclass
+                                        </h3>
+                                        <p className="text-white/60 text-sm font-light leading-relaxed mb-8">
+                                            Stop trading hours for dollars. Learn to clone yourself with AI agents and custom automation systems.
+                                        </p>
+                                        <Link
+                                            href="/category/technology"
+                                            className="flex items-center justify-between bg-white/10 hover:bg-white text-white hover:text-gray-900 px-6 py-4 rounded-2xl border border-white/10 transition-all group/btn shadow-xl shadow-black/20"
+                                        >
+                                            <span className="text-sm font-black uppercase tracking-widest">Explore Tech Hub</span>
+                                            <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
                                 </div>
 
                                 {/* Popular Topics */}
