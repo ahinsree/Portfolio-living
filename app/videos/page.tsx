@@ -127,6 +127,16 @@ export default async function VideosPage() {
                             </div>
                         </div>
 
+                        <div className="absolute top-12 left-12 z-30">
+                            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full shadow-2xl">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                </span>
+                                <span className="text-xs font-black uppercase tracking-[0.3em] text-white">Coming Soon</span>
+                            </div>
+                        </div>
+
                         <div className="absolute bottom-0 left-0 p-12 md:p-16 z-20 max-w-3xl text-white">
                             <div className="flex items-center gap-4 mb-6">
                                 <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-white/30">Start Here</span>
@@ -160,6 +170,17 @@ export default async function VideosPage() {
                                 {playlist.videos.map((video, vIdx) => (
                                     <div key={vIdx} className="group cursor-pointer">
                                         <div className="relative aspect-video bg-gray-100 rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-gray-100 group-hover:shadow-2xl transition-all duration-500">
+                                            {/* Coming Soon Tag */}
+                                            <div className="absolute top-4 left-4 z-20">
+                                                <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full">
+                                                    <span className="relative flex h-1.5 w-1.5">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                                                    </span>
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.15em] text-white">Coming Soon</span>
+                                                </div>
+                                            </div>
+
                                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all z-10" />
                                             <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-gray-900 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full z-20 shadow-sm">
                                                 {video.duration}

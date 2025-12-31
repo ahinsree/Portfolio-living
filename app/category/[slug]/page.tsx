@@ -309,6 +309,17 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                             {category.videos.map((video: CategoryVideo, idx: number) => (
                                 <Link href={video.link} key={idx} className="block group">
                                     <div className="relative aspect-video bg-gray-100 rounded-[2rem] overflow-hidden mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                                        {/* Coming Soon Tag */}
+                                        <div className="absolute top-4 left-4 z-20">
+                                            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full">
+                                                <span className="relative flex h-1.5 w-1.5">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                                                </span>
+                                                <span className="text-[9px] font-black uppercase tracking-[0.15em] text-white">Coming Soon</span>
+                                            </div>
+                                        </div>
+
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/0 transition-all z-10">
                                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
                                                 <Play fill="currentColor" className="w-6 h-6 text-primary ml-1" />

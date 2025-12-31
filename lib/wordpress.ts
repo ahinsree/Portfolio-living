@@ -71,10 +71,10 @@ const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 
 const CATEGORY_AUTHOR_MAP: Record<string, { name: string; avatar: string }> = {
   "investment": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "communication": { name: "Jishnu G Anand", avatar: "/images/authors/sarath.png" },
-  "career": { name: "Jishnu G Anand", avatar: "/images/authors/sarath.png" },
+  "communication": { name: "Jishnu G Anand", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" },
+  "career": { name: "Jishnu G Anand", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" },
   "personal development": { name: "Sarath V Raj", avatar: "/images/authors/sarath.png" },
-  "technology": { name: "Ahinsree B", avatar: "/images/authors/sarath.png" },
+  "technology": { name: "Ahinsree B", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400" },
 };
 
 function mapPost(post: any): WordPressPost {
@@ -99,12 +99,12 @@ function mapPost(post: any): WordPressPost {
   }
 
   return {
-    id: post.id?.toString() || "post-id",
+    id: post.id?.toString() || post.slug || `generated-id-${post.title?.rendered?.slice(0, 10)}`,
     title: post.title?.rendered || "Untitled",
     excerpt: post.excerpt?.rendered || "",
     content: post.content?.rendered || "",
     slug: post.slug || "",
-    date: post.date || new Date().toISOString(),
+    date: post.date || "2024-01-01T00:00:00",
     featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
       node: {
         sourceUrl: post._embedded['wp:featuredmedia'][0].source_url
@@ -117,7 +117,7 @@ function mapPost(post: any): WordPressPost {
       node: {
         name,
         avatar: {
-          url: avatar
+          url: avatar || "/images/authors/sarath.png"
         }
       }
     }
@@ -207,7 +207,7 @@ export async function getPostsByCategory(categorySlug: string): Promise<WordPres
     });
     if (!res.ok) throw new Error('Failed to fetch posts by category');
     const posts = await res.json();
-    return posts.map(mapPost);
+    return Array.isArray(posts) ? posts.map(mapPost) : [];
   } catch (error) {
     console.error('WordPress Fetch Error (getPostsByCategory):', error);
     return [];

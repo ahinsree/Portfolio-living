@@ -179,7 +179,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                     >
                                         {sliderPosts.map((post, index) => (
                                             <motion.div
-                                                key={post.id}
+                                                key={`${post.id}-${index}`}
                                                 className="min-w-[320px] md:min-w-[400px] snap-start"
                                                 initial={{ opacity: 0, x: 20 }}
                                                 animate={{ opacity: 1, x: 0 }}

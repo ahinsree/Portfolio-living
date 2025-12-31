@@ -34,14 +34,16 @@ interface TestimonialsProps {
 }
 
 export default function Testimonials({ data }: TestimonialsProps) {
-    const displayTestimonials = data && data.length > 0
-        ? data.map(node => ({
-            name: node.testimonialFields.personName,
-            role: node.testimonialFields.personRole,
-            content: node.testimonialFields.testimonialText,
-            rating: node.testimonialFields.rating || 5,
-            image: node.testimonialFields?.personImage?.node?.sourceUrl || `https://i.pravatar.cc/150?u=${node.testimonialFields?.personName || 'user'}`
-        }))
+    const mappedTestimonials = data?.filter(node => node && node.testimonialFields).map(node => ({
+        name: node.testimonialFields.personName || "Community Member",
+        role: node.testimonialFields.personRole || "Professional",
+        content: node.testimonialFields.testimonialText || "Great experience with the systems.",
+        rating: node.testimonialFields.rating || 5,
+        image: node.testimonialFields?.personImage?.node?.sourceUrl || `https://i.pravatar.cc/150?u=${node.testimonialFields?.personName || 'user'}`
+    }));
+
+    const displayTestimonials = mappedTestimonials && mappedTestimonials.length > 0
+        ? mappedTestimonials
         : defaultTestimonials;
 
     return (
@@ -76,7 +78,7 @@ export default function Testimonials({ data }: TestimonialsProps) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {displayTestimonials.map((testimonial, index) => (
                         <motion.div
-                            key={testimonial.name}
+                            key={`${testimonial.name}-${index}`}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -88,7 +90,7 @@ export default function Testimonials({ data }: TestimonialsProps) {
                             </div>
 
                             <div className="flex justify-center gap-1 mb-6">
-                                {[...Array(testimonial.rating)].map((_, i) => (
+                                {[...Array(Math.max(0, Math.floor(testimonial.rating)))].map((_, i) => (
                                     <Star key={i} size={16} className="fill-primary text-primary" />
                                 ))}
                             </div>
