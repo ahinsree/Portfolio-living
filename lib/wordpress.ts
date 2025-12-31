@@ -297,7 +297,7 @@ async function fetchGraphQL(query: string, variables = {}) {
     headers: {
       'Content-Type': 'application/json',
     },
-    next: { revalidate: 3600 },
+    next: { revalidate: 60 },
     body: JSON.stringify({
       query,
       variables,
@@ -454,6 +454,7 @@ export async function getTestimonials(): Promise<WordPressTestimonial[]> {
           }
         }
       `,
+      fetchPolicy: 'network-only',
     });
 
     return data?.testimonials?.nodes || [];
