@@ -54,7 +54,7 @@ export default async function BlogsPage() {
                                 <div className="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-3/4 text-white">
                                     <div className="flex flex-wrap items-center gap-6 mb-8">
                                         <span className="bg-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-lg">
-                                            Featured insight
+                                            {featuredPost.blogPostFields?.featuredSubtitle || "Featured insight"}
                                         </span>
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">

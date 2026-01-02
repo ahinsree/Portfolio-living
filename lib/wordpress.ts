@@ -11,6 +11,7 @@ export interface WordPressPost {
   featuredImage?: {
     node: {
       sourceUrl: string;
+      altText?: string;
     };
   };
   categories: {
@@ -24,6 +25,22 @@ export interface WordPressPost {
       name: string;
       avatar?: {
         url: string;
+      };
+    };
+  };
+  blogPostFields?: {
+    featuredSubtitle?: string;
+    writerName?: string;
+    writerImage?: {
+      node: {
+        sourceUrl: string;
+        altText?: string;
+      };
+    };
+    featuredImage?: {
+      node: {
+        sourceUrl: string;
+        altText?: string;
       };
     };
   };
@@ -72,13 +89,24 @@ const BASE_URL = 'https://cms.theportfolioliving.com/wp-json/wp/v2';
 const POST_FIELDS_FRAGMENT = `
   id
   title
+  slug
   excerpt
   content
-  slug
   date
-  featuredImage {
-    node {
-      sourceUrl
+  blogPostFields {
+    featuredSubtitle
+    writerName
+    writerImage {
+      node {
+        sourceUrl
+        altText
+      }
+    }
+    featuredImage {
+      node {
+        sourceUrl
+        altText
+      }
     }
   }
   categories {
@@ -87,26 +115,21 @@ const POST_FIELDS_FRAGMENT = `
       slug
     }
   }
-  author {
-    node {
-      name
-      avatar {
-        url
-      }
-    }
-  }
 `;
 
 function formatWPPost(post: any): WordPressPost {
+  // Use blogPostFields for images and author info if available
+  const blogFields = post.blogPostFields || {};
+
   return {
     ...post,
     // Ensure nested objects exist to prevent UI crashes
-    featuredImage: post.featuredImage || undefined,
+    featuredImage: blogFields.featuredImage || post.featuredImage || undefined,
     author: {
       node: {
-        name: post.author?.node?.name || "Sarath V Raj",
+        name: blogFields.writerName || post.author?.node?.name || "Sarath V Raj",
         avatar: {
-          url: post.author?.node?.avatar?.url || "/images/authors/sarath.png"
+          url: blogFields.writerImage?.node?.sourceUrl || post.author?.node?.avatar?.url || "/images/authors/sarath.png"
         }
       }
     },
@@ -119,8 +142,8 @@ function formatWPPost(post: any): WordPressPost {
 export async function getAllPosts(): Promise<WordPressPost[]> {
   try {
     const data = await fetchGraphQL(`
-      query AllPosts {
-        posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
+      query BlogPosts {
+        posts(first: 10) {
           nodes {
             ${POST_FIELDS_FRAGMENT}
           }

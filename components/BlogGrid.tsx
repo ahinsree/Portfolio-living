@@ -113,7 +113,7 @@ export default function BlogGrid({ posts, title }: { posts: WordPressPost[], tit
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
                                             <div className="absolute bottom-10 left-10 right-10">
                                                 <span className="bg-white/95 backdrop-blur-md text-primary font-black uppercase tracking-[0.2em] text-[10px] px-6 py-2.5 rounded-full inline-block mb-4 shadow-xl">
-                                                    Featured Insight {activeTab !== "All" && `in ${activeTab}`}
+                                                    {featuredPost.blogPostFields?.featuredSubtitle || (activeTab !== "All" ? `Featured Insight in ${activeTab}` : "Featured Insight")}
                                                 </span>
                                             </div>
                                         </Link>
