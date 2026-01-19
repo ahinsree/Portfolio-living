@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { Clock, Calendar, User, ArrowLeft, Share2, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ShareButtons from "@/components/ShareButtons";
+
 
 export async function generateStaticParams() {
     try {
@@ -45,12 +47,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         </Link>
 
                         <div className="flex items-center gap-4">
-                            <button className="p-2 text-gray-400 hover:text-primary transition-colors">
-                                <Share2 size={20} />
-                            </button>
-                            <button className="p-2 text-gray-400 hover:text-primary transition-colors">
-                                <MessageCircle size={20} />
-                            </button>
+                            <ShareButtons title={post.title} />
                         </div>
                     </div>
 
@@ -154,6 +151,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                         <button className="text-sm font-bold text-primary hover:underline">Follow on Twitter</button>
                                         <button className="text-sm font-bold text-primary hover:underline">View Portfolio</button>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Share Section */}
+                            <div className="mt-16 border-t border-gray-100 pt-10">
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                    <div>
+                                        <h4 className="text-gray-900 font-bold mb-1">Found this insight valuable?</h4>
+                                        <p className="text-gray-400 text-sm">Share it with your network and help others build their portfolio living.</p>
+                                    </div>
+                                    <ShareButtons title={post.title} />
                                 </div>
                             </div>
                         </div>
