@@ -19,6 +19,13 @@ interface HexHandle {
 // Child Component for Individual Hexagon
 const Hexagon = memo(forwardRef<HexHandle, { x: number; y: number }>(({ x, y }, ref) => {
     const [isFlashing, setIsFlashing] = useState(false);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.innerWidth < 768) {
+            setScale(0.6);
+        }
+    }, []);
 
     useImperativeHandle(ref, () => ({
         flash: () => {
@@ -30,7 +37,7 @@ const Hexagon = memo(forwardRef<HexHandle, { x: number; y: number }>(({ x, y }, 
     return (
         <motion.path
             d="M25 0 L50 14.43 L50 43.3 L25 57.74 L0 43.3 L0 14.43 Z"
-            transform={`translate(${x}, ${y}) scale(${typeof window !== 'undefined' && window.innerWidth < 768 ? 0.6 : 1})`}
+            transform={`translate(${x}, ${y}) scale(${scale})`}
             fill={isFlashing ? "white" : "transparent"}
             stroke={isFlashing ? "cyan" : "rgba(0, 243, 255, 0.1)"}
             strokeWidth={isFlashing ? 3 : 1}

@@ -14,7 +14,7 @@ export default function Footer() {
                     >
                         PORTFOLIO LIVING
                     </Link>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500" suppressHydrationWarning>
                         © {new Date().getFullYear()} Portfolio Living. All rights reserved.
                     </p>
                 </div>

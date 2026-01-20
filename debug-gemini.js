@@ -2,7 +2,7 @@
 const { createGoogleGenerativeAI } = require('@ai-sdk/google');
 const { generateText } = require('ai');
 
-const API_KEY = "AIzaSyD-lgFlzuz0h4gh1e7_CX9oKfRjBumQfCI";
+const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY;
 
 const google = createGoogleGenerativeAI({
     apiKey: API_KEY,

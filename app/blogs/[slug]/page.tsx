@@ -6,6 +6,7 @@ import { Clock, Calendar, User, ArrowLeft, Share2, MessageCircle } from "lucide-
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ShareButtons from "@/components/ShareButtons";
+import BlogVoiceOutput from "@/components/BlogVoiceOutput";
 
 
 export async function generateStaticParams() {
@@ -87,7 +88,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 <Calendar size={20} className="text-primary" />
                                 <div className="text-sm">
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-300 mb-1">Published</p>
-                                    <span className="font-bold text-gray-600 uppercase tracking-wider">{new Date(post.date).toLocaleDateString()}</span>
+                                    <span className="font-bold text-gray-600 uppercase tracking-wider">{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                 </div>
                             </div>
                             <div className="h-10 w-[1px] bg-gray-100 hidden md:block" />
@@ -120,6 +121,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         <div className="hidden lg:block lg:col-span-1" />
 
                         <div className="lg:col-span-8">
+                            <BlogVoiceOutput content={post.content || ""} title={post.title} />
+
                             <div
                                 className="prose prose-xl prose-slate max-w-none 
                                 prose-headings:font-sans prose-headings:font-bold prose-headings:text-gray-900 prose-headings:tracking-tight
