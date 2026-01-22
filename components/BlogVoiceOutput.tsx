@@ -51,6 +51,8 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
     const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
     const [chunks, setChunks] = useState<string[]>([]);
     const [currentChunkIndex, setCurrentChunkIndex] = useState(-1);
+    const [volume, setVolume] = useState(1.0);
+    const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
     const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -101,7 +103,30 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
         };
     }, [synth]);
 
+    // Effect to update volume of currently playing utterance
+    useEffect(() => {
+        if (utteranceRef.current) {
+            utteranceRef.current.volume = volume;
+
+            // Fallback: If browser doesn't support real-time volume change,
+            // we pause it at 0 to ensure silence.
+            if (volume === 0 && isPlaying) {
+                synth?.pause();
+            } else if (volume > 0 && synth?.paused && isPlaying && !isPaused) {
+                synth?.resume();
+            }
+        }
+    }, [volume, synth, isPlaying, isPaused]);
+
     const handleTranslateAndPlay = async () => {
+        // Mobile fix: Speech synthesis must be triggered by a direct user gesture.
+        // We start an empty utterance immediately to "unlock" the audio context.
+        if (synth && !isPlaying && !isPaused) {
+            const unlockUtterance = new SpeechSynthesisUtterance("");
+            unlockUtterance.volume = 0;
+            synth.speak(unlockUtterance);
+        }
+
         // If already playing the selected language, just resume or restart
         if (isPaused) {
             synth?.resume();
@@ -126,12 +151,12 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
             setCurrentChunkIndex(-1);
             isStoppingRef.current = false;
 
-            let textToSpeak = "";
-            let titleToSpeak = "";
+            let rawTextToSpeak = "";
+            let rawTitleToSpeak = "";
 
             if (selectedLanguage.code.startsWith("en")) {
-                textToSpeak = content.replace(/<[^>]*>?/gm, "").replace(/\s+/g, " ").trim();
-                titleToSpeak = title.replace(/<[^>]*>?/gm, "").trim();
+                rawTextToSpeak = content;
+                rawTitleToSpeak = title;
             } else {
                 const response = await fetch("/api/translate", {
                     method: "POST",
@@ -149,11 +174,29 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
                 setTranslatedContent(data.translatedContent);
                 setTranslatedTitle(data.translatedTitle);
 
-                textToSpeak = data.translatedContent.replace(/<[^>]*>?/gm, "").replace(/\s+/g, " ").trim();
-                titleToSpeak = data.translatedTitle.replace(/<[^>]*>?/gm, "").trim();
+                rawTextToSpeak = data.translatedContent;
+                rawTitleToSpeak = data.translatedTitle;
             }
 
-            const combinedText = titleToSpeak + ". " + textToSpeak;
+            // Robust cleaning: Decode HTML entities and remove problematic symbols
+            const decodeHtml = (html: string) => {
+                if (typeof document === 'undefined') return html;
+                const txt = document.createElement("textarea");
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
+            const cleanText = (text: string) => {
+                return decodeHtml(text)
+                    .replace(/<[^>]*>?/gm, "") // Ensure no tags left
+                    .replace(/%/g, " percent ") // Make percent audible
+                    .replace(/(\d)\.(\d)/g, "$1 point $2") // Make decimal points audible
+                    .replace(/[#"'’“”]/g, " ") // Remove hashtags and all types of quotes
+                    .replace(/\s+/g, " ")     // Clean up whitespace
+                    .trim();
+            };
+
+            const combinedText = cleanText(rawTitleToSpeak) + ". " + cleanText(rawTextToSpeak);
             const newChunks = chunkText(combinedText);
 
             if (newChunks.length === 0) {
@@ -233,7 +276,7 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
 
         utterance.rate = 1.0;
         utterance.pitch = 1.0;
-        utterance.volume = 1.0;
+        utterance.volume = volume;
 
         utterance.onstart = () => {
             setIsPlaying(true);
@@ -292,17 +335,62 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
     return (
         <div className="mb-12 p-6 bg-gradient-to-br from-gray-50 to-white rounded-[2rem] border border-gray-100 shadow-sm">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                         <Volume2 size={24} />
                     </div>
                     <div>
-                        <h4 className="font-sans font-bold text-gray-900">Audio Experience</h4>
-                        <p className="text-xs text-gray-400 font-medium">Listen to this insight in your language</p>
+                        <h4 className="font-sans font-bold text-gray-900 line-break-anywhere">Audio Experience</h4>
+                        <p className="text-xs text-gray-400 font-medium whitespace-nowrap">Listen to this insight in your language</p>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
+                    {/* Volume Control */}
+                    <div className="relative flex items-center gap-2 group">
+                        <button
+                            onClick={() => setShowVolumeSlider(!showVolumeSlider)}
+                            className="p-2.5 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm"
+                            title="Adjust Volume"
+                        >
+                            <Volume2 size={18} />
+                        </button>
+
+                        <AnimatePresence>
+                            {showVolumeSlider && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95, x: -10 }}
+                                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, x: -10 }}
+                                    className="absolute right-full mr-2 px-4 py-2 bg-white border border-gray-100 rounded-xl shadow-xl flex items-center gap-3 z-50 min-w-[120px]"
+                                >
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value={volume}
+                                        onInput={(e) => {
+                                            const val = parseFloat((e.target as HTMLInputElement).value);
+                                            setVolume(val);
+                                            if (utteranceRef.current) {
+                                                utteranceRef.current.volume = val;
+                                                // Immediate response for silence
+                                                if (val === 0 && isPlaying) {
+                                                    synth?.pause();
+                                                } else if (val > 0 && synth?.paused && isPlaying && !isPaused) {
+                                                    synth?.resume();
+                                                }
+                                            }
+                                        }}
+                                        className="w-24 h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
+                                    />
+                                    <span className="text-[10px] font-bold text-gray-500 w-6">{Math.round(volume * 100)}%</span>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
                     {/* Language Selector */}
                     <div className="relative">
                         <button
@@ -310,7 +398,7 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
                             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm font-bold text-gray-700 hover:border-primary/30 transition-all shadow-sm"
                         >
                             <Globe size={16} className="text-primary" />
-                            {selectedLanguage.name}
+                            <span className="max-w-[80px] truncate">{selectedLanguage.name}</span>
                             <ChevronDown size={14} className={`transition-transform ${showLangDropdown ? "rotate-180" : ""}`} />
                         </button>
 
@@ -320,7 +408,7 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 10 }}
-                                    className="absolute bottom-full mb-2 left-0 w-48 max-h-64 overflow-y-auto bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-2 custom-scrollbar"
+                                    className="absolute bottom-full mb-2 right-0 md:left-0 w-48 max-h-64 overflow-y-auto bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-2 custom-scrollbar"
                                 >
                                     {LANGUAGES.map((lang) => (
                                         <button
@@ -354,12 +442,12 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
                                 {isTranslating ? (
                                     <>
                                         <Loader2 size={18} className="animate-spin" />
-                                        Translating...
+                                        <span>Translating...</span>
                                     </>
                                 ) : (
                                     <>
                                         <Play size={18} fill="currentColor" />
-                                        Listen Now
+                                        <span>Listen Now</span>
                                     </>
                                 )}
                             </button>
@@ -402,9 +490,9 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
                         className="mt-6 pt-6 border-t border-gray-50"
                     >
                         <div className="flex items-start gap-4">
-                            <div className="mt-1 px-2 py-0.5 bg-primary/5 text-primary text-[10px] font-black uppercase rounded-md">Translated</div>
-                            <div className="flex-1">
-                                <h5 className="font-bold text-gray-900 mb-1" dangerouslySetInnerHTML={{ __html: translatedTitle }} />
+                            <div className="mt-1 px-2 py-0.5 bg-primary/5 text-primary text-[10px] font-black uppercase rounded-md shrink-0">Translated</div>
+                            <div className="flex-1 min-w-0">
+                                <h5 className="font-bold text-gray-900 mb-1 truncate" dangerouslySetInnerHTML={{ __html: translatedTitle }} />
                                 <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: translatedContent || "" }} />
                             </div>
                         </div>
@@ -425,6 +513,16 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #cbd5e1;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          background: #3b82f6;
+          border-radius: 50%;
+          cursor: pointer;
         }
       `}</style>
         </div>
