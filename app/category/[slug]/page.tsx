@@ -300,7 +300,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     </div>
 
                     {/* Watch & Learn */}
-                    <div>
+                    {/* <div>
                         <div className="flex items-center gap-4 mb-12">
                             <Play className="w-8 h-8 text-primary" />
                             <h2 className="text-sm font-sans font-black uppercase tracking-[0.2em] text-gray-900">Visual Learning</h2>
@@ -309,7 +309,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                             {category.videos.map((video: CategoryVideo, idx: number) => (
                                 <Link href={video.link} key={idx} className="block group">
                                     <div className="relative aspect-video bg-gray-100 rounded-[2rem] overflow-hidden mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                                        {/* Coming Soon Tag */}
                                         <div className="absolute top-4 left-4 z-20">
                                             <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full">
                                                 <span className="relative flex h-1.5 w-1.5">
@@ -342,7 +341,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                                 </Link>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
                 </section>
 
                 {/* 4. Cross-Pollination */}

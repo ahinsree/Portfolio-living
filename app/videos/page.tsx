@@ -96,6 +96,33 @@ export default async function VideosPage() {
     // 3. Use fallbacks if no WP videos exist
     const displayPlaylists = playlists.length > 0 ? playlists : FALLBACK_PLAYLISTS;
 
+    // Temporary: Hide content
+    const isHidden = true;
+
+    if (isHidden) {
+        return (
+            <div className="min-h-screen bg-white">
+                <Header />
+                <main className="pt-48 pb-24 text-center">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-8">
+                            <Video className="w-10 h-10 text-primary opacity-20" />
+                        </div>
+                        <h1 className="text-4xl font-display font-bold text-gray-900 mb-4">Masterclass Library</h1>
+                        <p className="text-gray-400 text-lg font-light max-w-xl mx-auto mb-12">
+                            We are currently re-curating our video library to provide the highest quality visual blueprints.
+                            The library will be back online shortly.
+                        </p>
+                        <Link href="/" className="inline-flex items-center gap-2 text-primary font-bold hover:underline">
+                            Return Home <ArrowRight size={16} />
+                        </Link>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-primary selection:text-white">
             <Header />

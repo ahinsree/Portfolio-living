@@ -29,9 +29,9 @@ export default async function Home() {
         />
 
         {/* Watch & Learn */}
-        <VideoSection
+        {/* <VideoSection
           title={homeData?.watchLearnHeading || homeData?.watchLearnTitle}
-        />
+        /> */}
 
         <Testimonials data={testimonials} />
 
