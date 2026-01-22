@@ -89,13 +89,13 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
         }
         loadVoices();
 
-        // 15-second hang fix: Periodically resume the synth
+        // 5-second stability fix: Mobile browsers often pause speech synthesis 
+        // to save power or if the engine hangs. Periodic resume keeps it alive.
         const resumeInterval = setInterval(() => {
-            if (synth.speaking && !synth.paused) {
-                synth.pause();
+            if (synth.speaking) {
                 synth.resume();
             }
-        }, 10000);
+        }, 5000);
 
         return () => {
             synth.cancel();
@@ -306,6 +306,7 @@ const BlogVoiceOutput: React.FC<BlogVoiceOutputProps> = ({ content, title }) => 
         };
 
         utteranceRef.current = utterance;
+        synth.resume(); // Extra push for mobile stability
         synth.speak(utterance);
     };
 
