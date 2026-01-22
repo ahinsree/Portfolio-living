@@ -124,12 +124,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             <BlogVoiceOutput content={post.content || ""} title={post.title} />
 
                             <div
-                                className="prose prose-xl prose-slate max-w-none 
-                                prose-headings:font-sans prose-headings:font-bold prose-headings:text-gray-900 prose-headings:tracking-tight
-                                prose-p:text-gray-600 prose-p:leading-[1.8] prose-p:font-light
+                                className="prose prose-xl md:prose-2xl prose-slate max-w-none 
+                                prose-headings:font-sans prose-headings:font-bold prose-headings:text-slate-900 prose-headings:tracking-tight prose-headings:mt-16 prose-headings:mb-8
+                                prose-p:text-slate-800 prose-p:leading-[1.8] prose-p:font-normal prose-p:mb-10
                                 prose-a:text-primary prose-a:no-underline prose-a:font-bold hover:prose-a:underline
-                                prose-strong:text-gray-900 prose-strong:font-bold
-                                prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-gray-50 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-r-3xl prose-blockquote:text-2xl prose-blockquote:font-sans
+                                prose-strong:text-slate-950 prose-strong:font-bold
+                                prose-blockquote:border-l-4 prose-blockquote:border-gray-200 prose-blockquote:bg-transparent prose-blockquote:py-4 prose-blockquote:px-10 prose-blockquote:text-xl prose-blockquote:font-normal prose-blockquote:text-slate-600 prose-blockquote:italic prose-blockquote:not-italic
                                 prose-img:rounded-[2rem] prose-img:shadow-2xl"
                                 dangerouslySetInnerHTML={{ __html: post.content || "" }}
                             />
